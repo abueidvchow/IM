@@ -1,11 +1,9 @@
-package main
+package router
 
 import (
-	"IM/db"
+	"IM/controller"
 	"IM/pkg/config"
 	"IM/pkg/logger"
-	sf "IM/pkg/snowflake"
-	"IM/router"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -17,8 +15,8 @@ import (
 	"time"
 )
 
-// 启动服务（优雅关机）
 func run(r *gin.Engine) {
+	// 启动服务（优雅关机）
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%v", config.Conf.Port),
 		Handler: r,
@@ -51,41 +49,16 @@ func run(r *gin.Engine) {
 	zap.L().Info("Server exiting")
 }
 
-func init() {
-	if len(os.Args) < 2 {
-		fmt.Println("需要配置文件路径")
-		os.Exit(0)
-	}
-	// 读取配置文件
-	err := config.Init(os.Args[1])
-	if err != nil {
-		fmt.Println("读取配置文件错误:", err)
-		return
-	}
+func SetUpRouter() (r *gin.Engine) {
+	r = gin.New()
+	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 
-	// 数据库初始化
-	err = db.InitMySQL(config.Conf.MySQLConfig)
-	if err != nil {
-		fmt.Println("数据库初始化失败：", err)
-		return
-	}
-	// 日志初始化
-	err = logger.Init(config.Conf.LogConfig)
-	if err != nil {
-		fmt.Println("日志初始化失败：", err)
-		return
-	}
+	r.GET("/", func(c *gin.Context) {
+		c.String(200, "你好,世界")
+	})
 
-	// 初始化雪花算法
-	if err := sf.Init(config.Conf.StartTime, config.Conf.MachineID); err != nil {
-		fmt.Println("雪花算法初始化失败：", err)
-	}
-}
+	r.GET("/register", controller.UserRegister)
+	r.GET("/login", controller.UserLogin)
 
-func main() {
-
-	// 路由注册
-	r := router.SetUpRouter()
-	run(r)
-
+	return r
 }
