@@ -1,0 +1,9 @@
+2024-09-23T00:24:56.041+0800	INFO	logger/logger.go:78	/register	{"status": 404, "method": "GET", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}
+2024-09-23T00:25:00.400+0800	INFO	logger/logger.go:78	/register	{"status": 200, "method": "POST", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0005343}
+2024-09-23T00:25:06.380+0800	INFO	logger/logger.go:78	/register	{"status": 200, "method": "POST", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0008385}
+2024-09-23T00:25:20.051+0800	INFO	IM/main.go:42	Shutdown Server ...
+2024-09-23T00:25:20.052+0800	INFO	IM/main.go:51	Server exiting
+2024-09-23T00:26:15.995+0800	INFO	logger/logger.go:78	/register	{"status": 200, "method": "POST", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}
+2024-09-23T00:26:18.795+0800	INFO	logger/logger.go:78	/register	{"status": 200, "method": "POST", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}
+2024-09-23T00:30:26.004+0800	INFO	logger/logger.go:78	/register	{"status": 200, "method": "POST", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0005195}
+2024-09-23T00:30:37.724+0800	INFO	logger/logger.go:78	/register	{"status": 200, "method": "POST", "path": "/register", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0005664}

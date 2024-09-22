@@ -1,13 +1,15 @@
 package jwt
 
 import (
+	"IM/pkg/config"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
 
 const TokenExpireDuration = time.Hour * 24 * 7
+const RefreshTokenExpireDuration = time.Hour * 24 * 30
 
-var mySecret = []byte("secret")
+var mySecret = []byte("IMHAPPY")
 
 // MyClaims自定义声明结构体并内嵌jwt.StandardClaims
 // jwt包自带的jwt.StandardClaims只包含了官方字段
@@ -24,7 +26,7 @@ func GentToken(userId int64, username string) (aToken, rToken string, err error)
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
-			Issuer:    "bluebell",
+			Issuer:    config.Conf.Name,
 		},
 	}
 	//使用指定的签名方法创建签名对象
@@ -35,8 +37,8 @@ func GentToken(userId int64, username string) (aToken, rToken string, err error)
 	}
 
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(time.Hour * 24 * 30).Unix(),
-		Issuer:    "bluebell",
+		ExpiresAt: time.Now().Add(RefreshTokenExpireDuration).Unix(),
+		Issuer:    config.Conf.Name,
 	})
 
 	rToken, err = token.SignedString(mySecret)
