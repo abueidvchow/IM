@@ -1,7 +1,7 @@
 package main
 
 import (
-	"IM/db"
+	"IM/db/mysql"
 	"IM/pkg/config"
 	"IM/pkg/logger"
 	sf "IM/pkg/snowflake"
@@ -64,7 +64,7 @@ func init() {
 	}
 
 	// 数据库初始化
-	err = db.InitMySQL(config.Conf.MySQLConfig)
+	err = mysql.InitMySQL(config.Conf.MySQLConfig)
 	if err != nil {
 		fmt.Println("数据库初始化失败：", err)
 		return

@@ -1,24 +1,48 @@
 package controller
 
 import (
-	"IM/common/web"
+	"IM/common"
 	"IM/common/web/request"
+	"IM/service"
 	"github.com/gin-gonic/gin"
 )
 
-type UserController struct {
-}
-
 func UserRegister(c *gin.Context) {
-	//检验参数
-	p := &request.LoginParam{}
+	// 检验参数
+	p := &request.RegisterParam{}
 	if err := c.ShouldBind(p); err != nil {
-		ResponseError(c, web.ERROR_INVALID_PARAMS, err.Error())
+		ResponseError(c, common.ERROR_INVALID_PARAMS, err.Error())
 		return
 	}
-	ResponseSuccess(c, web.SUCCESS_REGISTER, p)
+
+	code, err := service.UserRegisterService(p)
+	if err != nil {
+		ResponseError(c, code, err.Error())
+		return
+	}
+	if code < 2000 {
+		ResponseSuccess(c, code, p)
+	} else {
+		ResponseError(c, code)
+	}
+
 }
 
 func UserLogin(c *gin.Context) {
 	//检验参数
+	p := &request.LoginParam{}
+	if err := c.ShouldBind(p); err != nil {
+		ResponseError(c, common.ERROR_INVALID_PARAMS, err.Error())
+		return
+	}
+	code, data, err := service.UserLoginService(p)
+	if err != nil {
+		ResponseError(c, code, err.Error())
+		return
+	}
+	if code < 2000 {
+		ResponseSuccess(c, code, data)
+	} else {
+		ResponseError(c, code)
+	}
 }
