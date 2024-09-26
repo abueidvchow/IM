@@ -22,6 +22,7 @@ func SetUpRouter() (r *gin.Engine) {
 	chat.Use(middleware.JWTAuthMiddleware)
 	{
 		chat.GET("/msg", controller.SendMsg)
+		//chat.GET("/list", controller.ChatList)
 		//chat.POST("/msg", controller.SendMsg)
 	}
 

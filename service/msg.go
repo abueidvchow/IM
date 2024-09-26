@@ -1,9 +1,12 @@
 package service
 
+import "C"
 import (
+	"IM/controller"
 	"IM/db/mysql"
 	"IM/model"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 	"net/http"
@@ -85,6 +88,35 @@ func SendMsgService(w http.ResponseWriter, r *http.Request, uid int64) {
 
 }
 
-func handleWebSocket(w http.ResponseWriter, r *http.Request) {
+func ChatListService(c *gin.Context) {
+	room_id := c.Query("room_id")
+	if room_id == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "房间号不能为空",
+		})
+		return
+	}
+	//判断用户是否属于该房间
+	uid, _ := c.Get(controller.CtxUserIdKey)
+	if !mysql.CheckUserFromUserRoom(uid.(string), room_id) {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "非法访问",
+		})
+		return
+	}
+	page, _ := strconv.Atoi(c.Query("page"))
+	size, _ := strconv.Atoi(c.Query("size"))
 
+	list, err := mysql.GetChatList(room_id, page, size)
+	if err != nil {
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "ok",
+		"data": list,
+	})
+	return
 }

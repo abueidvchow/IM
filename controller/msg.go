@@ -11,3 +11,7 @@ func SendMsg(c *gin.Context) {
 	var userID int64 = uid.(int64)
 	service.SendMsgService(c.Writer, c.Request, userID)
 }
+
+func ChatList(c *gin.Context) {
+	service.ChatListService(c)
+}

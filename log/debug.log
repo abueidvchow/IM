@@ -234,3 +234,7 @@
 2024-09-26T15:18:25.361+0800	INFO	IM/main.go:42	Shutdown Server ...
 2024-09-26T15:18:25.776+0800	INFO	IM/main.go:51	Server exiting
 2024-09-26T15:33:54.693+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0157067}
+2024-09-26T15:54:39.186+0800	INFO	logger/logger.go:78	/api/chat/msg	{"status": 200, "method": "GET", "path": "/api/chat/msg", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 1.0675959}
+2024-09-26T15:55:02.843+0800	INFO	logger/logger.go:78	/api/chat/list/room_id=1&page=1&size=2	{"status": 404, "method": "GET", "path": "/api/chat/list/room_id=1&page=1&size=2", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}
+2024-09-26T15:55:40.254+0800	INFO	logger/logger.go:78	/api/chat/list	{"status": 404, "method": "GET", "path": "/api/chat/list", "query": "room_id=1&size=2&page=1", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}
+2024-09-26T15:55:47.370+0800	INFO	logger/logger.go:78	/api/chat/list	{"status": 404, "method": "GET", "path": "/api/chat/list", "query": "room_id=1&size=2&page=1", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}

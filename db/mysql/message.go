@@ -20,3 +20,14 @@ func SaveMessage(msg *model.Message) error {
 	}
 	return nil
 }
+
+func GetChatList(room_id string, page, size int) ([]model.Message, error) {
+	var msgs []model.Message = make([]model.Message, 0)
+	skip := (page - 1) * size
+	db := DB.Offset(skip).Limit(skip+size).Find(&msgs, "room_id=?", room_id)
+	if db.Error != nil {
+		zap.L().Error(db.Error.Error())
+		return nil, db.Error
+	}
+	return msgs, nil
+}
