@@ -2,6 +2,7 @@ package router
 
 import (
 	"IM/controller"
+	"IM/middleware"
 	"IM/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +17,13 @@ func SetUpRouter() (r *gin.Engine) {
 
 	r.POST("/register", controller.UserRegister)
 	r.POST("/login", controller.UserLogin)
+
+	chat := r.Group("/api/chat")
+	chat.Use(middleware.JWTAuthMiddleware)
+	{
+		chat.GET("/msg", controller.SendMsg)
+		//chat.POST("/msg", controller.SendMsg)
+	}
 
 	return r
 }

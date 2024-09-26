@@ -9,6 +9,7 @@ import (
 	"IM/pkg/snowflake"
 	"crypto/md5"
 	"fmt"
+	"strconv"
 )
 
 func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error) {
@@ -40,28 +41,28 @@ func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error
 	return common.SUCCESS_REGISTER, nil
 }
 
-func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, data interface{}, err error) {
+func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, token, user_id string, err error) {
 	//检验username是否存在
 	exist, err := mysql.CheckUserExist(p.Username)
 	if err != nil {
-		return common.ERROR_MYSQL, nil, err
+		return common.ERROR_MYSQL, "", "", err
 	}
 	if !exist {
-		return common.ERROR_USER_NOT_EXIST, nil, nil
+		return common.ERROR_USER_NOT_EXIST, "", "", nil
 	}
 	user, err := mysql.LoginUser(p)
 	if err != nil {
-		return common.ERROR_MYSQL, nil, err
+		return common.ERROR_MYSQL, "", "", err
 	} else if user == nil {
-		return common.ERROR_INVALID_PARAMS, nil, nil
+		return common.ERROR_INVALID_PARAMS, "", "", nil
 	}
 
 	//发放token
 	aToken, _, err := jwt.GentToken(user.UserID, user.Username)
 	if err != nil {
-		return common.ERROR_GENERATE_JWT, nil, err
+		return common.ERROR_GENERATE_JWT, "", "", err
 	}
 
-	return common.SUCCESS_LOGIN, aToken, nil
+	return common.SUCCESS_LOGIN, aToken, strconv.FormatInt(user.UserID, 10), nil
 
 }

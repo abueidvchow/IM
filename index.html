@@ -1,0 +1,32 @@
+{{"index.html"}}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+    <script>
+        var conn;
+
+        function connect() {
+            conn = new WebSocket("ws://localhost:8080/api/chat/msg");
+            conn.onmessage = function(event) {
+                var messages = document.getElementById("messages");
+                messages.value += event.data + "\n";
+            };
+        }
+
+        function sendMessage() {
+            var input = document.getElementById("messageInput");
+            conn.send(input.value);
+            input.value = '';
+        }
+
+        window.onload = connect;
+    </script>
+</head>
+<body>
+<h1>Chat Room</h1>
+<textarea id="messages" rows="10" cols="30" readonly></textarea><br>
+<input id="messageInput" type="text" placeholder="Type a message...">
+<button onclick="sendMessage()">Send</button>
+</body>
+</html>

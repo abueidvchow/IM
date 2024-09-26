@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const CtxUserIdKey = "user_id"
+
 func UserRegister(c *gin.Context) {
 	// 检验参数
 	p := &request.RegisterParam{}
@@ -35,13 +37,14 @@ func UserLogin(c *gin.Context) {
 		ResponseError(c, common.ERROR_INVALID_PARAMS, err.Error())
 		return
 	}
-	code, data, err := service.UserLoginService(p)
+	code, token, user_id, err := service.UserLoginService(p)
 	if err != nil {
 		ResponseError(c, code, err.Error())
 		return
 	}
 	if code < 2000 {
-		ResponseSuccess(c, code, data)
+		c.Set(CtxUserIdKey, user_id)
+		ResponseSuccess(c, code, token)
 	} else {
 		ResponseError(c, code)
 	}
