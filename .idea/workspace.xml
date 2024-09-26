@@ -7,7 +7,7 @@
     <list default="true" id="f11aff32-a142-4baa-b5eb-3c4f4212c449" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/msg.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/msg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/mysql/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/mysql/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/mysql/user_room.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/mysql/user_room.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/debug.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/router.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/msg.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/msg.go" afterDir="false" />

@@ -2,7 +2,6 @@ package service
 
 import "C"
 import (
-	"IM/controller"
 	"IM/db/mysql"
 	"IM/model"
 	"fmt"
@@ -18,7 +17,7 @@ import (
 var wc map[string]*websocket.Conn = make(map[string]*websocket.Conn, 0)
 var lock sync.RWMutex
 
-func SendMsgService(w http.ResponseWriter, r *http.Request, uid int64) {
+func SendMessageService(w http.ResponseWriter, r *http.Request, uid int64) {
 	//升级成websocket
 	upgrader := websocket.Upgrader{
 		ReadBufferSize:  1024,
@@ -88,7 +87,7 @@ func SendMsgService(w http.ResponseWriter, r *http.Request, uid int64) {
 
 }
 
-func ChatListService(c *gin.Context) {
+func ChatListService(c *gin.Context, uid int64) {
 	room_id := c.Query("room_id")
 	if room_id == "" {
 		c.JSON(http.StatusOK, gin.H{
@@ -98,8 +97,7 @@ func ChatListService(c *gin.Context) {
 		return
 	}
 	//判断用户是否属于该房间
-	uid, _ := c.Get(controller.CtxUserIdKey)
-	if !mysql.CheckUserFromUserRoom(uid.(string), room_id) {
+	if !mysql.CheckUserFromUserRoom(strconv.FormatInt(uid, 10), room_id) {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  "非法访问",
