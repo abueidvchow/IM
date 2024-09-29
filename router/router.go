@@ -2,8 +2,8 @@ package router
 
 import (
 	"IM/controller"
-	"IM/middleware"
 	"IM/pkg/logger"
+	"IM/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,11 +18,11 @@ func SetUpRouter() (r *gin.Engine) {
 	r.POST("/register", controller.UserRegister)
 	r.POST("/login", controller.UserLogin)
 
-	chat := r.Group("/api/chat")
-	chat.Use(middleware.JWTAuthMiddleware)
+	auth := r.Group("/api", middleware.JWTAuthMiddleware)
 	{
-		chat.GET("/msg", controller.SendMsg)
-		chat.GET("/list", controller.ChatList)
+		auth.POST("/friend/add", controller.AddFriend)
+		auth.POST("/group/create", controller.CreateGroup)
+		auth.GET("/group/userList", controller.GroupUserList)
 	}
 
 	return r

@@ -3,7 +3,6 @@ package service
 import (
 	"IM/common"
 	"IM/common/web/request"
-	"IM/db/mysql"
 	"IM/model"
 	"IM/pkg/jwt"
 	"IM/pkg/snowflake"
@@ -14,7 +13,7 @@ import (
 
 func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error) {
 	//检验username是否存在
-	exist, err := mysql.CheckUserExist(p.Username)
+	exist, err := model.CheckUserExist(p.Username)
 	if err != nil {
 		return common.ERROR_MYSQL, err
 	}
@@ -28,9 +27,10 @@ func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error
 	user := &model.User{
 		UserID:   snowflake.GenID(),
 		Username: p.Username,
+		Nickname: p.Nickname,
 		Password: md5String,
 	}
-	n, err := mysql.RegisterUser(user)
+	n, err := model.RegisterUser(user)
 	if err != nil {
 		return common.ERROR_MYSQL, err
 
@@ -43,14 +43,14 @@ func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error
 
 func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, token, user_id string, err error) {
 	//检验username是否存在
-	exist, err := mysql.CheckUserExist(p.Username)
+	exist, err := model.CheckUserExist(p.Username)
 	if err != nil {
 		return common.ERROR_MYSQL, "", "", err
 	}
 	if !exist {
 		return common.ERROR_USER_NOT_EXIST, "", "", nil
 	}
-	user, err := mysql.LoginUser(p)
+	user, err := model.LoginUser(p)
 	if err != nil {
 		return common.ERROR_MYSQL, "", "", err
 	} else if user == nil {

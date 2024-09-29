@@ -9,7 +9,7 @@ func SendMsg(c *gin.Context) {
 	uid, _ := c.Get(CtxUserIdKey)
 
 	var userID int64 = uid.(int64)
-	service.SendMessageService(c.Writer, c.Request, userID)
+	service.SendMessageService(c, userID)
 }
 
 func ChatList(c *gin.Context) {

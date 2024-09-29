@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"IM/pkg/config"
+	"IM/config"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

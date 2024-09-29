@@ -3,7 +3,7 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  args_bin = ["-c","./config/config.yaml"]
+  args_bin = ["-c","./config.yaml"]
   bin = "tmp\\main.exe"
   cmd = "go build -o ./tmp/main.exe ."
   delay = 1000
@@ -12,7 +12,7 @@ tmp_dir = "tmp"
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
-  full_bin = "./tmp/main.exe ./config/config.yaml"
+  full_bin = "./tmp/main.exe ./config.yaml"
   include_dir = []
   include_ext = ["go", "tpl", "tmpl", "html","yaml"]
   include_file = []

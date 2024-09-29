@@ -1,6 +1,11 @@
 package model
 
-import "time"
+import (
+	"IM/pkg/db"
+	"errors"
+	"go.uber.org/zap"
+	"time"
+)
 
 // 真正发送的消息结构体
 type MessageStruct struct {
@@ -24,4 +29,30 @@ type Message struct {
 
 func (Message) TableName() string {
 	return "message"
+}
+
+func SaveMessage(msg *Message) error {
+
+	result := db.DB.Create(&msg)
+	if result.Error != nil {
+		zap.L().Error("消息保存出错：", zap.Error(result.Error))
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		err := errors.New("消息未保存成功")
+		zap.L().Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+func GetChatList(room_id string, page, size int) ([]Message, error) {
+	var msgs []Message = make([]Message, 0)
+	skip := (page - 1) * size
+	result := db.DB.Offset(skip).Limit(skip+size).Find(&msgs, "room_id=?", room_id)
+	if result.Error != nil {
+		zap.L().Error(result.Error.Error())
+		return nil, result.Error
+	}
+	return msgs, nil
 }
