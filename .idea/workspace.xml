@@ -5,31 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11aff32-a142-4baa-b5eb-3c4f4212c449" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/service/friend.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.air.toml" beforeDir="false" afterPath="$PROJECT_DIR$/.air.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/status_code.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/status_code.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/web/request/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/web/request/register.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/msg.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/msg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/mysql/db.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/mysql/message.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/mysql/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/mysql/user_room.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/middleware/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/model/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/user_room.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/user_room.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/config/config.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/jwt/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/jwt/jwt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/logger/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/logger/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/msg.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/msg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/main.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/room.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/user_room.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

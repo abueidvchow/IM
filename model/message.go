@@ -1,58 +1,24 @@
 package model
 
 import (
-	"IM/pkg/db"
-	"errors"
-	"go.uber.org/zap"
 	"time"
 )
 
-// 真正发送的消息结构体
-type MessageStruct struct {
-	UserID  int64  `json:"user_id" gorm:"column:user_id"` // 发送者ID
-	RoomID  int64  `json:"room_id" gorm:"column:room_id"` // 房间ID
-	Content string `json:"content" gorm:"column:content"` // 消息内容
-}
-
 // 数据库的
 type Message struct {
-	//MessageID int64 `json:"message_id" gorm:"column:message_id"` // 消息ID
-	UserID int64 `json:"user_id" gorm:"column:user_id"` // 发送者ID
-	RoomID int64 `json:"room_id" gorm:"column:room_id"` // 房间ID
-	//TargetID    int64  `json:"target_id" gorm:"column:target_id"`       // 接收者ID
-	//SendType    int    `json:"send_type" gorm:"column:send_type"`       // 发送类型 私发 群发 广播
-	//MessageType int    `json:"message_type" gorm:"column:message_type"` // 文字 图片...
-	Content    string    `json:"content" gorm:"column:content"` // 消息内容
-	CreateTime time.Time `json:"create_time" gorm:"column:create_time"`
-	UpdateTime time.Time `json:"update_time" gorm:"column:update_time"`
+	ID          int64     `gorm:"primary_key;auto_increment;comment:'自增主键'" json:"id"`
+	UserID      int64     `gorm:"not null;comment:'用户id，指接受者用户id'" json:"user_id"`
+	SenderID    int64     `gorm:"not null;comment:'发送者用户id'"`
+	SessionType int8      `gorm:"not null;comment:'聊天类型，群聊/单聊'" json:"session_type"`
+	ReceiverId  int64     `gorm:"not null;comment:'接收者id，群聊id/用户id'" json:"receiver_id"`
+	MessageType int8      `gorm:"not null;comment:'消息类型,语言、文字、图片'" json:"message_type"`
+	Content     []byte    `gorm:"not null;comment:'消息内容'" json:"content"`
+	Seq         int64     `gorm:"not null;comment:'消息序列号'" json:"seq"`
+	SendTime    time.Time `gorm:"not null;default:CURRENT_TIMESTAMP;comment:'消息发送时间'" json:"send_time"`
+	CreateTime  time.Time `gorm:"not null;default:CURRENT_TIMESTAMP;comment:'创建时间'" json:"create_time"`
+	UpdateTime  time.Time `gorm:"not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;comment:'更新时间'" json:"update_time"`
 }
 
 func (Message) TableName() string {
 	return "message"
-}
-
-func SaveMessage(msg *Message) error {
-
-	result := db.DB.Create(&msg)
-	if result.Error != nil {
-		zap.L().Error("消息保存出错：", zap.Error(result.Error))
-		return result.Error
-	}
-	if result.RowsAffected == 0 {
-		err := errors.New("消息未保存成功")
-		zap.L().Error(err.Error())
-		return err
-	}
-	return nil
-}
-
-func GetChatList(room_id string, page, size int) ([]Message, error) {
-	var msgs []Message = make([]Message, 0)
-	skip := (page - 1) * size
-	result := db.DB.Offset(skip).Limit(skip+size).Find(&msgs, "room_id=?", room_id)
-	if result.Error != nil {
-		zap.L().Error(result.Error.Error())
-		return nil, result.Error
-	}
-	return msgs, nil
 }
