@@ -64,3 +64,38 @@
 2024-09-29T16:27:02.459+0800	INFO	logger/logger.go:78	/api/group/userList	{"status": 200, "method": "GET", "path": "/api/group/userList", "query": "group_id=1", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0205812}
 2024-09-29T16:27:17.841+0800	INFO	logger/logger.go:78	/api/group/userList	{"status": 200, "method": "GET", "path": "/api/group/userList", "query": "group_id=1", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.1208834}
 2024-09-29T16:27:43.801+0800	INFO	logger/logger.go:78	/api/group/userList	{"status": 200, "method": "GET", "path": "/api/group/userList", "query": "group_id=2", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0013515}
+2024-10-01T22:13:25.101+0800	INFO	IM/main.go:42	Shutdown Server ...
+2024-10-01T22:13:25.174+0800	INFO	IM/main.go:51	Server exiting
+2024-10-01T22:23:41.395+0800	INFO	logger/logger.go:78	/sc	{"status": 404, "method": "GET", "path": "/sc", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-01T22:23:49.954+0800	INFO	logger/logger.go:78	/api/sc	{"status": 200, "method": "GET", "path": "/api/sc", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 1.7401547}
+2024-10-01T22:24:21.039+0800	INFO	logger/logger.go:78	/api/sc	{"status": 200, "method": "GET", "path": "/api/sc", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0.0010904}
+2024-10-01T22:25:22.555+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.1174392}
+2024-10-01T22:26:42.961+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0016047}
+2024-10-01T22:27:20.998+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0021361}
+2024-10-01T22:27:31.909+0800	INFO	logger/logger.go:78	/api/sc	{"status": 200, "method": "GET", "path": "/api/sc", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0.0010795}
+
+
+2024-10-08T14:28:39.405+0800	INFO	IM/main.go:42	Shutdown Server ...
+2024-10-08T14:28:39.417+0800	INFO	IM/main.go:51	Server exiting
+2024-10-08T17:33:21.516+0800	INFO	logger/logger.go:78	/login	{"status": 404, "method": "GET", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0}
+2024-10-08T17:33:30.510+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0016982}
+2024-10-08T17:33:34.973+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0011265}
+2024-10-08T17:33:58.076+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0017356}
+2024-10-08T17:34:19.114+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0026074}
+2024-10-08T21:40:25.551+0800	INFO	IM/main.go:42	Shutdown Server ...
+2024-10-08T21:40:25.681+0800	INFO	IM/main.go:51	Server exiting
+2024-10-14T16:18:34.319+0800	FATAL	IM/main.go:31	listen: 	{"error": "listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}
+2024-10-14T16:21:05.771+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0005508}
+2024-10-14T16:21:56.318+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.1566576}
+2024-10-14T16:26:51.897+0800	INFO	logger/logger.go:78	/api/friend/add	{"status": 200, "method": "POST", "path": "/api/friend/add", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.3010892}
+2024-10-14T16:28:10.553+0800	INFO	logger/logger.go:78	/api/friend/add	{"status": 200, "method": "POST", "path": "/api/friend/add", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.1047805}
+2024-10-14T16:31:46.177+0800	INFO	logger/logger.go:78	/api/friend/add	{"status": 200, "method": "POST", "path": "/api/friend/add", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.1209577}
+2024-10-14T16:32:30.798+0800	INFO	logger/logger.go:78	/api/friend/add	{"status": 200, "method": "POST", "path": "/api/friend/add", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0265605}
+2024-10-14T16:32:51.424+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "PostmanRuntime/7.41.2", "errors": "", "cost": 0.0007334}
+2024-10-14T17:09:00.923+0800	INFO	IM/main.go:43	Shutdown Server ...
+2024-10-14T17:09:00.945+0800	INFO	IM/main.go:52	Server exiting
+2024-10-14T17:26:31.435+0800	FATAL	IM/main.go:31	listen: 	{"error": "listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}
+2024-10-14T17:27:53.409+0800	INFO	IM/main.go:43	Shutdown Server ...
+2024-10-14T17:27:53.409+0800	INFO	IM/main.go:52	Server exiting
+2024-10-14T17:34:21.362+0800	INFO	IM/main.go:43	Shutdown Server ...
+2024-10-14T17:34:21.363+0800	INFO	IM/main.go:52	Server exiting

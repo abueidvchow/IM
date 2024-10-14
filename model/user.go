@@ -5,6 +5,7 @@ import (
 	"IM/pkg/db"
 	"crypto/md5"
 	"fmt"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -22,7 +23,7 @@ func (User) TableName() string {
 	return "user"
 }
 
-func CheckUserExist(username string) (bool, error) {
+func CheckUserNameExist(username string) (bool, error) {
 	var count int64
 	db.DB.Model(User{}).Count(&count)
 	if count > 0 {
@@ -86,4 +87,17 @@ func LoginUser(p *request.LoginParam) (user *User, err error) {
 
 	//密码正确
 	return user, nil
+}
+
+func CheckUserIDExist(receiverID int64) (bool, error) {
+	user := &User{}
+	result := db.DB.Where("user_id = ?", receiverID).Find(&user)
+	if result.Error != nil {
+		zap.L().Error("model.user.CheckUserIDExist Error:", zap.Error(result.Error))
+		return false, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return false, nil
+	}
+	return true, nil
 }

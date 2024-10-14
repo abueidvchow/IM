@@ -24,3 +24,6 @@ mysql:
 
 websocket:
   port: 8081
+
+rabbitmq:
+  url: "amqp://guest:guest@172.17.175.38:5672/"

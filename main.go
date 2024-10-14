@@ -4,6 +4,7 @@ import (
 	"IM/config"
 	"IM/pkg/db"
 	"IM/pkg/logger"
+	"IM/pkg/mq"
 	sf "IM/pkg/snowflake"
 	"IM/router"
 	"context"
@@ -79,6 +80,13 @@ func init() {
 	// 初始化雪花算法
 	if err := sf.Init(config.Conf.StartTime, config.Conf.MachineID); err != nil {
 		fmt.Println("雪花算法初始化失败：", err)
+		return
+	}
+
+	// 初始化消息队列
+	if err := mq.InitRabbitMQ(config.Conf.RabbitMQConfig); err != nil {
+		fmt.Println("消息队列初始化失败：", err)
+		return
 	}
 }
 

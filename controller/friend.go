@@ -2,6 +2,7 @@ package controller
 
 import (
 	"IM/common"
+	"IM/model"
 	"IM/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -9,6 +10,10 @@ import (
 
 func AddFriend(c *gin.Context) {
 	//输入用户id添加
+	/*POSTMAN 添加好友格式
+	post body form-data
+	{"friend_id":2658626632155136}
+	*/
 	uid, _ := c.Get(CtxUserIdKey)
 
 	var userID int64 = uid.(int64)
@@ -18,7 +23,16 @@ func AddFriend(c *gin.Context) {
 		ResponseError(c, common.ERROR_INVALID_PARAMS, "不能添加自己为好友")
 		return
 	}
-	err := service.AddFriend(userID, friendID)
+	exist, err := model.CheckUserIDExist(friendID)
+	if err != nil {
+		ResponseError(c, common.ERROR_MYSQL, "查询用户ID时出错")
+		return
+	}
+	if !exist {
+		ResponseError(c, common.ERROR_USER_NOT_EXIST)
+		return
+	}
+	err = service.AddFriend(userID, friendID)
 	if err != nil {
 		ResponseError(c, common.ERROR_ADD_FRIEND, err)
 		return

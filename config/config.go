@@ -16,6 +16,7 @@ type AppConfig struct {
 	Port      int    `mapstructure:"port"`       // 运行端口
 
 	*WebSocketConfig `mapstructure:"websocket"`
+	*RabbitMQConfig  `mapstructure:"rabbitmq"`
 	*LogConfig       `mapstructure:"log"`
 	*MySQLConfig     `mapstructure:"mysql"`
 }
@@ -49,6 +50,10 @@ type LogConfig struct {
 
 type WebSocketConfig struct {
 	Port string `mapstructure:"port"`
+}
+
+type RabbitMQConfig struct {
+	Url string `mapstructure:"url"`
 }
 
 func Init(configFile string) error {

@@ -20,9 +20,12 @@ func SetUpRouter() (r *gin.Engine) {
 
 	auth := r.Group("/api", middleware.JWTAuthMiddleware)
 	{
+
 		auth.POST("/friend/add", controller.AddFriend)
 		auth.POST("/group/create", controller.CreateGroup)
 		auth.GET("/group/userList", controller.GroupUserList)
+
+		auth.GET("/ws", controller.Chat)
 	}
 
 	return r

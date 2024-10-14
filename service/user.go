@@ -13,7 +13,7 @@ import (
 
 func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error) {
 	//检验username是否存在
-	exist, err := model.CheckUserExist(p.Username)
+	exist, err := model.CheckUserNameExist(p.Username)
 	if err != nil {
 		return common.ERROR_MYSQL, err
 	}
@@ -43,7 +43,7 @@ func UserRegisterService(p *request.RegisterParam) (common.HttpStatusCode, error
 
 func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, token, user_id string, err error) {
 	//检验username是否存在
-	exist, err := model.CheckUserExist(p.Username)
+	exist, err := model.CheckUserNameExist(p.Username)
 	if err != nil {
 		return common.ERROR_MYSQL, "", "", err
 	}
