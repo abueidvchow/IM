@@ -18,6 +18,7 @@ func Chat(c *gin.Context) {
 	//	return
 	//}
 	uid, _ := c.Get(CtxUserIdKey)
+
 	//发送消息
 	service.ChatService(uid.(int64), c.Writer, c.Request)
 }

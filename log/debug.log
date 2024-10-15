@@ -99,3 +99,6 @@
 2024-10-14T17:27:53.409+0800	INFO	IM/main.go:52	Server exiting
 2024-10-14T17:34:21.362+0800	INFO	IM/main.go:43	Shutdown Server ...
 2024-10-14T17:34:21.363+0800	INFO	IM/main.go:52	Server exiting
+2024-10-15T19:47:46.232+0800	FATAL	IM/main.go:31	listen: 	{"error": "listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}
+2024-10-15T19:54:56.342+0800	INFO	logger/logger.go:78	/api/ws	{"status": 200, "method": "GET", "path": "/api/ws", "query": "receiver_id=1", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-15T19:54:58.215+0800	INFO	logger/logger.go:78	/api/ws	{"status": 200, "method": "GET", "path": "/api/ws", "query": "receiver_id=1", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}

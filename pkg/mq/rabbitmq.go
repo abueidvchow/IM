@@ -126,7 +126,7 @@ func NewConsumer(conn *amqp091.Connection, handleDelivery func(amqp091.Delivery)
 
 // 消息处理函数
 func handleDelivery(d amqp091.Delivery) {
-	fmt.Printf("Received message: %s\n", d.Body)
+	//fmt.Printf("Received message: %s\n", d.Body)
 	messages := make([]model.Message, 0)
 
 	err := json.Unmarshal(d.Body, &messages)
@@ -139,7 +139,7 @@ func handleDelivery(d amqp091.Delivery) {
 		}
 		return
 	}
-	fmt.Println("handleDelivery.message:", messages)
+	//fmt.Println("handleDelivery.message:", messages)
 	// 保存消息到数据库
 	//err = model.CreateMessages(messages)
 	//if err != nil {
@@ -150,4 +150,5 @@ func handleDelivery(d amqp091.Delivery) {
 	if err = d.Ack(false); err != nil {
 		log.Printf("Failed to acknowledge delivery: %v", err)
 	}
+	fmt.Println("消费者处理完成")
 }

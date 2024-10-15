@@ -1,11 +1,11 @@
 package ws
 
 import (
+	"IM/config"
 	"IM/model"
 	"IM/pkg/mq"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/rabbitmq/amqp091-go"
@@ -16,13 +16,15 @@ import (
 )
 
 type WebSocketConn struct {
-	Conn         *websocket.Conn
-	UserID       int64
-	inChannel    chan []byte //读消息队列
-	outChannel   chan []byte //写消息队列
-	closeChannel chan bool   //监听channel是否关闭
-	isClosed     bool        // 标识
-	lock         sync.Mutex
+	Conn              *websocket.Conn
+	UserID            int64
+	inChannel         chan []byte //读消息队列
+	outChannel        chan []byte //写消息队列
+	closeChannel      chan bool   //监听channel是否关闭
+	isClosed          bool        // 标识
+	isCloseMutex      sync.Mutex  // 保护 isClose 的锁
+	lastHeartBeatTime time.Time   // 最后活跃时间
+	heartMutex        sync.Mutex  // 保护最后活跃时间的锁
 }
 
 func NewWebSocketConn(w http.ResponseWriter, r *http.Request, uid int64) (wsc *WebSocketConn, err error) {
@@ -56,33 +58,30 @@ func NewWebSocketConn(w http.ResponseWriter, r *http.Request, uid int64) (wsc *W
 }
 
 // 从管道里接收消息
-func (wsc *WebSocketConn) ReadMessage() ([]byte, error) {
-	for {
-		select {
-		case data := <-wsc.inChannel:
-			return data, nil
-		case <-wsc.closeChannel:
-			return nil, errors.New("conn is closed")
-		}
-	}
-}
+//func (wsc *WebSocketConn) ReadMessage() ([]byte, error) {
+//	for {
+//		select {
+//		case data := <-wsc.inChannel:
+//			return data, nil
+//		case <-wsc.closeChannel:
+//			wsc.Close()
+//			return nil, errors.New("conn is closed")
+//		}
+//	}
+//}
 
 // websocket后台读取消息
 func (wsc *WebSocketConn) StartReader() {
 	for {
 		_, data, err := wsc.Conn.ReadMessage()
 		if err != nil {
-			wsc.Close()
+			fmt.Println("conn.ReadMessage error:", err)
+			if !wsc.isClosed {
+				wsc.closeChannel <- true
+			}
 			return
 		}
-
-		select {
-		case wsc.inChannel <- data:
-		case <-wsc.closeChannel:
-			wsc.Close()
-			return
-
-		}
+		wsc.HandlerMessage(data)
 	}
 }
 
@@ -105,17 +104,47 @@ func (wsc *WebSocketConn) StartWriter() {
 }
 
 func (wsc *WebSocketConn) Close() {
-	wsc.lock.Lock()
-	wsc.Conn.Close()
-	if !wsc.isClosed {
-		close(wsc.closeChannel)
-		wsc.isClosed = true
+	wsc.isCloseMutex.Lock()
+	defer wsc.isCloseMutex.Unlock()
+	if wsc.isClosed {
+		return
 	}
+	wsc.Conn.Close()
+
 	WSCMgr.RemoveConn(wsc.UserID)
-	wsc.lock.Unlock()
+	wsc.isClosed = true
+	wsc.closeChannel <- true
+	// 停止读取和写入
+	close(wsc.inChannel)
+	close(wsc.outChannel)
+	close(wsc.closeChannel)
+	fmt.Println("Conn Stop()... UserID = ", wsc.UserID)
+
+}
+
+// KeepLive 更新心跳
+func (wsc *WebSocketConn) KeepLive() {
+	now := time.Now()
+	wsc.heartMutex.Lock()
+	defer wsc.heartMutex.Unlock()
+	wsc.lastHeartBeatTime = now
+}
+
+// IsAlive 是否存活
+func (wsc *WebSocketConn) IsAlive() bool {
+	now := time.Now()
+	wsc.heartMutex.Lock()
+	defer wsc.heartMutex.Unlock()
+	if wsc.isClosed || now.Sub(wsc.lastHeartBeatTime) > time.Duration(config.Conf.HeartbeatTimeout)*time.Second {
+		return false
+	}
+	return true
 }
 
 func (wsc *WebSocketConn) HandlerMessage(data []byte) {
+	if len(data) == 0 {
+		return
+	}
 	msg := &model.Message{}
 	err := json.Unmarshal(data, msg)
 	if err != nil {

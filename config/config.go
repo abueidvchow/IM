@@ -8,12 +8,14 @@ import (
 var Conf = new(AppConfig)
 
 type AppConfig struct {
-	Name      string `mapstructure:"name"`
-	Mode      string `mapstructure:"mode"`
-	Version   string `mapstructure:"version"`
-	StartTime string `mapstructure:"start_time"` // 项目开始时间
-	MachineID int64  `mapstructure:"machine_id"` // 雪花算法会使用到
-	Port      int    `mapstructure:"port"`       // 运行端口
+	Name              string `mapstructure:"name"`
+	Mode              string `mapstructure:"mode"`
+	Version           string `mapstructure:"version"`
+	StartTime         string `mapstructure:"start_time"`         // 项目开始时间
+	MachineID         int64  `mapstructure:"machine_id"`         // 雪花算法会使用到
+	Port              int    `mapstructure:"port"`               // 运行端口
+	HeartbeatTimeout  int    `mapstructure:"heartbeat_timeout"`  // 心跳超时时间（秒）
+	HeartbeatInterval int    `mapstructure:"heartbeat_interval"` // 心跳检测时间间隔（秒）
 
 	*WebSocketConfig `mapstructure:"websocket"`
 	*RabbitMQConfig  `mapstructure:"rabbitmq"`

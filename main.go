@@ -7,6 +7,7 @@ import (
 	"IM/pkg/mq"
 	sf "IM/pkg/snowflake"
 	"IM/router"
+	"IM/service/ws"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,10 @@ import (
 
 // 启动服务（优雅关机）
 func run(r *gin.Engine) {
+	// 开启心跳超时检测
+	checker := ws.NewHeartBeatChecker(time.Second*time.Duration(config.Conf.HeartbeatInterval), ws.WSCMgr)
+	go checker.Start()
+
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%v", config.Conf.Port),
 		Handler: r,
@@ -40,6 +45,8 @@ func run(r *gin.Engine) {
 	// signal.Notify把收到的 syscall.SIGINT或syscall.SIGTERM 信号转发给quit
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // 此处不会阻塞
 	<-quit                                               // 阻塞在此，当接收到上述两种信号时才会往下执行
+
+	checker.Stop()
 	zap.L().Info("Shutdown Server ...")
 	// 创建一个5秒超时的context
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

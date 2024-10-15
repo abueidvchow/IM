@@ -19,19 +19,6 @@ func ChatService(uid int64, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 开启一个协程从管道读取消息和发送消息
-	go func(c *ws.WebSocketConn) {
-		for {
-			fmt.Println("等待读取对方消息")
-			data, err := c.ReadMessage()
-			if err != nil {
-				fmt.Println("ChatService.c.ReadMessage err: ", err)
-				return
-			}
-			c.HandlerMessage(data)
-		}
-	}(wsc)
-
 	// TODO
 	select {}
 }

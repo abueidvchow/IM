@@ -3,6 +3,8 @@ mode: "dev"
 version: "0.0.1"
 start_time: "2024-09-22"
 machine_id: 0
+heartbeat_timeout: 15
+heartbeat_interval: 10
 port: 8080
 
 log:
