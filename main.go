@@ -2,6 +2,7 @@ package main
 
 import (
 	"IM/config"
+	"IM/pkg"
 	"IM/pkg/db"
 	"IM/pkg/logger"
 	"IM/pkg/mq"
@@ -21,12 +22,14 @@ import (
 
 // 启动服务（优雅关机）
 func run(r *gin.Engine) {
+	// 开启worker工作池
+	ws.WSCMgr.StartWorkerPool()
 	// 开启心跳超时检测
 	checker := ws.NewHeartBeatChecker(time.Second*time.Duration(config.Conf.HeartbeatInterval), ws.WSCMgr)
 	go checker.Start()
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%v", config.Conf.Port),
+		Addr:    fmt.Sprintf("%v:%v", config.Conf.IP, config.Conf.Port),
 		Handler: r,
 	}
 
@@ -46,7 +49,10 @@ func run(r *gin.Engine) {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // 此处不会阻塞
 	<-quit                                               // 阻塞在此，当接收到上述两种信号时才会往下执行
 
+	// 关闭服务
+	ws.WSCMgr.Stop()
 	checker.Stop()
+
 	zap.L().Info("Shutdown Server ...")
 	// 创建一个5秒超时的context
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -71,12 +77,20 @@ func init() {
 		return
 	}
 
-	// 数据库初始化
+	// MySQL数据库初始化
 	err = db.InitMySQL(config.Conf.MySQLConfig)
 	if err != nil {
-		fmt.Println("数据库初始化失败：", err)
+		fmt.Println("MySQL数据库初始化失败：", err)
 		return
 	}
+
+	// Redis数据库初始化
+	err = db.InitRedis(config.Conf.RedisConfig)
+	if err != nil {
+		fmt.Println("Redis数据库初始化失败：", err)
+		return
+	}
+
 	// 日志初始化
 	err = logger.Init(config.Conf.LogConfig)
 	if err != nil {
@@ -98,7 +112,7 @@ func init() {
 }
 
 func main() {
-
+	pkg.GenBin()
 	// 路由注册
 	r := router.SetUpRouter()
 	run(r)

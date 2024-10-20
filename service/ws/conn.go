@@ -3,13 +3,15 @@ package ws
 import (
 	"IM/config"
 	"IM/model"
+	"IM/pkg/db"
 	"IM/pkg/mq"
+	"IM/pkg/protocol/pb"
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/rabbitmq/amqp091-go"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 	"net/http"
 	"sync"
 	"time"
@@ -17,9 +19,9 @@ import (
 
 type WebSocketConn struct {
 	Conn              *websocket.Conn
+	WscMgr            *WebSocketConnMgr
 	UserID            int64
-	inChannel         chan []byte //读消息队列
-	outChannel        chan []byte //写消息队列
+	sendChannel       chan []byte //写消息队列
 	closeChannel      chan bool   //监听channel是否关闭
 	isClosed          bool        // 标识
 	isCloseMutex      sync.Mutex  // 保护 isClose 的锁
@@ -44,31 +46,21 @@ func NewWebSocketConn(w http.ResponseWriter, r *http.Request, uid int64) (wsc *W
 
 	wsc = &WebSocketConn{
 		Conn:         conn,                    // websocket连接
+		WscMgr:       WSCMgr,                  // 所属管理
 		UserID:       uid,                     // 该连接的当前用户
-		inChannel:    make(chan []byte, 1024), // 接收消息管道
-		outChannel:   make(chan []byte, 1024), // 发送消息管道
+		sendChannel:  make(chan []byte, 1024), // 发送消息管道
 		closeChannel: make(chan bool, 1),      // 关闭管道
 		isClosed:     false,
 	}
+	return
+}
+
+func (wsc *WebSocketConn) Start() {
 	// 开启读，读取客户端发送给服务端，再由服务端转发过来的消息
 	go wsc.StartReader()
 	// 开启写，将消息发送给服务端，再由服务端去转发
 	go wsc.StartWriter()
-	return
 }
-
-// 从管道里接收消息
-//func (wsc *WebSocketConn) ReadMessage() ([]byte, error) {
-//	for {
-//		select {
-//		case data := <-wsc.inChannel:
-//			return data, nil
-//		case <-wsc.closeChannel:
-//			wsc.Close()
-//			return nil, errors.New("conn is closed")
-//		}
-//	}
-//}
 
 // websocket后台读取消息
 func (wsc *WebSocketConn) StartReader() {
@@ -89,12 +81,13 @@ func (wsc *WebSocketConn) StartReader() {
 func (wsc *WebSocketConn) StartWriter() {
 	for {
 		select {
-		case data := <-wsc.outChannel:
-			err := wsc.Conn.WriteMessage(websocket.TextMessage, data)
+		case data := <-wsc.sendChannel:
+			err := wsc.Conn.WriteMessage(websocket.BinaryMessage, data)
 			if err != nil {
 				wsc.Close()
 				return
 			}
+			wsc.KeepLive()
 		case <-wsc.closeChannel:
 			wsc.Close()
 			return
@@ -111,12 +104,12 @@ func (wsc *WebSocketConn) Close() {
 	}
 	wsc.Conn.Close()
 
-	WSCMgr.RemoveConn(wsc.UserID)
-	wsc.isClosed = true
 	wsc.closeChannel <- true
-	// 停止读取和写入
-	close(wsc.inChannel)
-	close(wsc.outChannel)
+	WSCMgr.RemoveConn(wsc.UserID)
+	db.DelUserOnline(wsc.UserID)
+
+	wsc.isClosed = true
+	close(wsc.sendChannel)
 	close(wsc.closeChannel)
 	fmt.Println("Conn Stop()... UserID = ", wsc.UserID)
 
@@ -142,30 +135,43 @@ func (wsc *WebSocketConn) IsAlive() bool {
 }
 
 func (wsc *WebSocketConn) HandlerMessage(data []byte) {
+	// 拒收空消息
 	if len(data) == 0 {
+		fmt.Println("空消息")
 		return
 	}
-	msg := &model.Message{}
-	err := json.Unmarshal(data, msg)
+
+	// 消息
+	input := new(pb.Input)
+	err := proto.Unmarshal(data, input)
 	if err != nil {
-		fmt.Println("HandlerMessage.json.Unmarshal 错误：", err)
+		fmt.Println("HandlerMessage.proto.Unmarshal error:", err)
 		return
 	}
-	if msg.SessionType == 1 && msg.ReceiverId == wsc.UserID { //不给自己发
-		fmt.Println("不给自己发送")
+	req := &Req{
+		conn: wsc,
+		data: input.Data,
+		f:    nil,
+	}
+	switch input.Type {
+	case pb.CmdType_CT_MESSAGE: // 消息投递
+		req.f = req.MessageHandler
+	case pb.CmdType_CT_SYNC: // 拉取离线消息
+		req.f = req.Sync
+	default:
+		fmt.Println("未知消息类型")
+	}
+	if req.f == nil {
 		return
 	}
-	msg.SenderID = wsc.UserID
-	msg.UserID = msg.ReceiverId
-	switch msg.SessionType {
-	case 1: //私聊
-		SendToUser(msg.ReceiverId, msg)
-	case 2: //群聊
-		SendToGroup(msg.ReceiverId, msg)
-	}
+	// 更新心跳时间
+	wsc.KeepLive()
+
+	// 送入worker队列等待调度执行
+	wsc.WscMgr.SendMsgToTaskQueue(req)
 }
 
-func SendToUser(rid int64, msg *model.Message) {
+func SendToUser(rid int64, msg *pb.Message) (err error) {
 	/* POSTMAN 私聊消息发送格式
 	URL:127.0.0.1:8080/api/ws?receiver_id=2433797081530368
 	{
@@ -176,29 +182,57 @@ func SendToUser(rid int64, msg *model.Message) {
 	    "Content":"你好"
 	}
 	*/
-	//先假设都在线
+
+	// 获取接受者的seqID
+	seq, err := db.GetUserNextSeq(db.SeqObjectTypeUser, rid)
+	if err != nil {
+		fmt.Println("SendToUser.db.GetUserNextSeq error:", err)
+		return
+	}
+
+	// 检验对方是否在线
+	online, err := db.GetUserOnline(rid)
+	if err != nil {
+		fmt.Println("SendToUser.db.GetUserOnline error:", err)
+		return
+	}
+	// 对方离线
+	if online == "" {
+		fmt.Printf("用户ID：%d 不在线 \n", rid)
+		return
+	}
+
+	// 对方在线
 	wsc := WSCMgr.GetConn(rid)
-	msg.SendTime = time.Now()
-	msg.CreateTime = time.Now()
-	msg.UpdateTime = time.Now()
-	messages := make([]model.Message, 1)
-	messages[0] = *msg
-	mData, _ := json.Marshal(messages) // 序列化数据
+	msg.Seq = seq
+	msg.SendTime = time.Now().UnixMilli()
+
+	mData := model.MessageToProtoMarshal(&model.Message{
+		UserID:      rid,
+		SenderID:    msg.SenderId,
+		SessionType: int8(msg.SessionType),
+		ReceiverId:  msg.ReceiverId,
+		MessageType: int8(msg.MessageType),
+		Content:     msg.Content,
+		Seq:         seq,
+		SendTime:    time.UnixMilli(msg.SendTime),
+	})
 
 	// 将数据发送给服务器的消息队列
-	err := mq.RabbitMQ.Producer.PublishWithContext(context.Background(), mq.RabbitMQ.ExchangeName, mq.RabbitMQ.RouteKey, false, false,
+	err = mq.RabbitMQ.Producer.PublishWithContext(context.Background(), mq.RabbitMQ.ExchangeName, mq.RabbitMQ.RouteKey, false, false,
 		amqp091.Publishing{
-			ContentType: "text/plain",
+			ContentType: "application/x-protobuf",
 			Body:        mData,
 		})
 	if err != nil {
 		fmt.Println("发送消息给消息队列失败:", err)
 		return
 	}
-	wsc.outChannel <- mData
+	wsc.sendChannel <- msg.Content
+	return nil
 }
 
-func SendToGroup(groupId int64, msg *model.Message) {
+func SendToGroup(groupId int64, msg *pb.Message) (err error) {
 	// 假设都在线
 	// 得到群成员列表
 	/* POSTMAN 发送群聊格式
@@ -222,41 +256,51 @@ func SendToGroup(groupId int64, msg *model.Message) {
 		m[user.UserID] = struct{}{}
 	}
 	// 检验当前用户是否属于当前群
-	if _, ok := m[msg.SenderID]; !ok {
+	if _, ok := m[msg.SenderId]; !ok {
 		fmt.Println("用户不属于该群组")
 		return
 	}
 
 	// 自己不再进行推送
-	delete(m, msg.SenderID)
-	i := 0
-	messages := make([]model.Message, len(m))
-	for k, _ := range m {
-		messages[i] = model.Message{
-			UserID:      k,
-			SenderID:    msg.SenderID,
-			SessionType: 2,
-			ReceiverId:  groupId,
-			MessageType: 1,
-			Content:     msg.Content,
-			//Seq:         0,
-			SendTime:   time.Now(),
-			CreateTime: time.Now(),
-			UpdateTime: time.Now(),
-		}
-		i++
+	delete(m, msg.SenderId)
+
+	sendUserIds := make([]int64, 0, len(m))
+	for userId := range m {
+		sendUserIds = append(sendUserIds, userId)
 	}
-	mData, err := json.Marshal(messages)
+
+	// 获取群用户的seqID
+	seqIDs, err := db.GetUserNextSeqBatch(db.SeqObjectTypeUser, sendUserIds)
 	if err != nil {
-		fmt.Println("SendToGroup.json.Marshal Error: ", err)
+		fmt.Println("SendToGroup.db.GetUserNextSeqBatch error:", err)
 		return
+	}
+
+	//  k:userid v:该userId的seq
+	sendUserSet := make(map[int64]int64, len(seqIDs))
+	for i, userId := range sendUserIds {
+		sendUserSet[userId] = seqIDs[i]
+	}
+
+	messages := make([]*model.Message, 0, len(m))
+	for userID, seq := range sendUserSet {
+		messages = append(messages, &model.Message{
+			UserID:      userID,
+			SenderID:    msg.SenderId,
+			SessionType: int8(msg.SessionType),
+			ReceiverId:  groupId,
+			MessageType: int8(msg.MessageType),
+			Content:     msg.Content,
+			Seq:         seq,
+			SendTime:    time.UnixMilli(msg.SendTime),
+		})
 	}
 
 	// 写入消息队列
 	err = mq.RabbitMQ.Producer.PublishWithContext(context.Background(), mq.RabbitMQ.ExchangeName, mq.RabbitMQ.RouteKey, false, false,
 		amqp091.Publishing{
-			ContentType: "text/plain",
-			Body:        mData,
+			ContentType: "application/x-protobuf",
+			Body:        model.MessageToProtoMarshal(messages...),
 		})
 	if err != nil {
 		fmt.Println("发送消息给消息队列失败:", err)
@@ -265,8 +309,9 @@ func SendToGroup(groupId int64, msg *model.Message) {
 
 	for UserID, _ := range m {
 		wsc := WSCMgr.GetConn(UserID)
-		mData, _ := json.Marshal(msg.Content)
-		wsc.outChannel <- mData
+		//mData, _ := json.Marshal(msg.Content)
+		wsc.sendChannel <- msg.Content
 	}
 	fmt.Println("群消息发送完成 ")
+	return nil
 }

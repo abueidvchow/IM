@@ -3,7 +3,6 @@ package mq
 import (
 	"IM/config"
 	"IM/model"
-	"encoding/json"
 	"fmt"
 	"github.com/rabbitmq/amqp091-go"
 	"log"
@@ -126,26 +125,18 @@ func NewConsumer(conn *amqp091.Connection, handleDelivery func(amqp091.Delivery)
 
 // 消息处理函数
 func handleDelivery(d amqp091.Delivery) {
-	//fmt.Printf("Received message: %s\n", d.Body)
-	messages := make([]model.Message, 0)
-
-	err := json.Unmarshal(d.Body, &messages)
+	// 保存消息到数据库
+	data := model.ProtoMarshalToMessage(d.Body)
+	err := model.CreateMessages(data)
 	if err != nil {
-		fmt.Println("handleDelivery.json.Unmarshal Error:", err)
-		err = d.Nack(false, false)
+		fmt.Println("handleDelivery.model.CreateMessages Error:", err)
+		err = d.Nack(true, false)
 		if err != nil {
 			fmt.Println("handleDelivery.Nack Error:", err)
 			return
 		}
 		return
 	}
-	//fmt.Println("handleDelivery.message:", messages)
-	// 保存消息到数据库
-	//err = model.CreateMessages(messages)
-	//if err != nil {
-	//	fmt.Println("handleDelivery.model.CreateMessages Error:", err)
-	//	return
-	//}
 	// 确认消息
 	if err = d.Ack(false); err != nil {
 		log.Printf("Failed to acknowledge delivery: %v", err)

@@ -20,7 +20,9 @@ const (
 	ERROR_ADD_FRIEND
 	ERROR_CREATE_GROUP
 	ERROR_GET_GROUP_USERS
+	ERROR_USER_LOGINED
 	ERROR_MYSQL
+	ERROR_REDIS
 )
 
 var HttpMsg map[HttpStatusCode]string = map[HttpStatusCode]string{
@@ -38,7 +40,9 @@ var HttpMsg map[HttpStatusCode]string = map[HttpStatusCode]string{
 	ERROR_ADD_FRIEND:        "添加好友失败",
 	ERROR_CREATE_GROUP:      "创建群聊失败",
 	ERROR_GET_GROUP_USERS:   "获取群成员失败",
-	ERROR_MYSQL:             "数据库内部错误",
+	ERROR_USER_LOGINED:      "用户已登录",
+	ERROR_MYSQL:             "MySQL数据库内部错误",
+	ERROR_REDIS:             "Redis数据库内部错误",
 }
 
 func (h HttpStatusCode) GetMsg() string {

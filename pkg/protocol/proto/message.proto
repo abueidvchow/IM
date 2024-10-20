@@ -1,0 +1,42 @@
+syntax = "proto3";
+package pb;
+option go_package = "../pb";
+
+
+// 会话类型
+enum SessionType{
+  ST_UNKNOWN = 0; // 未知
+  ST_SINGLE =1; // 私聊
+  ST_GROUP = 2; // 群聊
+}
+
+// 消息类型
+enum MessageType{
+  MT_UNKNOWN = 0; // 未知
+  MT_TEXT = 1; // 文字类型
+  MT_PICTURE = 2; // 图片类型
+  MT_VOICE = 3; // 语音类型
+}
+
+// websocket消息类型
+enum CmdType{
+  CT_UNKNOWN = 0;  // 未知
+  CT_MESSAGE = 1;  // 消息投递
+  CT_SYNC = 2 ; // 离线消息同步
+}
+
+//
+message Input{
+  CmdType type = 1;
+  bytes data = 2;
+}
+
+message Message {
+  SessionType session_type = 1;  // 会话类型 单聊、群聊
+  int64 receiver_id = 2;  // 接收者id 用户id/群组id
+  int64 sender_id = 3;  // 发送者id
+  MessageType message_type = 4;  // 消息类型 文本、图片、语音
+  bytes content = 5;  // 实际用户所发数据
+  int64 seq = 6;   // 客户端的最大消息同步序号
+  int64 send_time = 7; // 消息发送时间戳，ms
+}

@@ -3,10 +3,14 @@ package service
 import (
 	"IM/common"
 	"IM/common/web/request"
+	"IM/config"
 	"IM/model"
+	"IM/pkg/db"
 	"IM/pkg/jwt"
 	"IM/pkg/snowflake"
+	"IM/service/ws"
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -50,6 +54,8 @@ func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, token,
 	if !exist {
 		return common.ERROR_USER_NOT_EXIST, "", "", nil
 	}
+
+	// 检验用户账号密码并返回该用户信息
 	user, err := model.LoginUser(p)
 	if err != nil {
 		return common.ERROR_MYSQL, "", "", err
@@ -57,11 +63,30 @@ func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, token,
 		return common.ERROR_INVALID_PARAMS, "", "", nil
 	}
 
+	// 检查用户是否已经在其他连接登录
+	onlineAddr, err := db.GetUserOnline(user.UserID)
+	if err != nil {
+		return common.ERROR_REDIS, "", "", err
+	}
+	if onlineAddr != "" {
+		fmt.Println("[用户登录] 用户已经在其他连接登录")
+		return common.ERROR_USER_LOGINED, "", "", errors.New(common.HttpMsg[common.ERROR_USER_LOGINED])
+	}
+
 	//发放token
 	aToken, _, err := jwt.GentToken(user.UserID, user.Username)
 	if err != nil {
 		return common.ERROR_GENERATE_JWT, "", "", err
 	}
+
+	// 加入Redis在线列表
+	loginAddr := config.Conf.IP + strconv.Itoa(config.Conf.Port)
+	err = db.SetUserOnline(user.UserID, loginAddr)
+	if err != nil {
+		return common.ERROR_REDIS, "", "", err
+	}
+	// 加入用户在线列表
+	ws.OnlineUser = append(ws.OnlineUser, user.UserID)
 
 	return common.SUCCESS_LOGIN, aToken, strconv.FormatInt(user.UserID, 10), nil
 

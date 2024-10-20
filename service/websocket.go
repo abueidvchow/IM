@@ -7,9 +7,10 @@ import (
 )
 
 func ChatService(uid int64, w http.ResponseWriter, r *http.Request) {
+
 	var wsc *ws.WebSocketConn
 
-	// 给当前用户创立WebSocket连接
+	// 给当前用户创建WebSocket连接
 	wsc, err := ws.NewWebSocketConn(w, r, uid)
 
 	// 把当前用户加入websocket conn管理
@@ -18,7 +19,7 @@ func ChatService(uid int64, w http.ResponseWriter, r *http.Request) {
 		fmt.Println("SingleChatService.ws.NewWebSocketConn err: ", err)
 		return
 	}
-
+	go wsc.Start()
 	// TODO
 	select {}
 }

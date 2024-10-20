@@ -3,8 +3,11 @@ mode: "dev"
 version: "0.0.1"
 start_time: "2024-09-22"
 machine_id: 0
-heartbeat_timeout: 15
-heartbeat_interval: 10
+heartbeat_timeout: 600
+heartbeat_interval: 60
+worker_pool_size: 10  # 业务 worker 队列数量
+max_worker_task: 1024 # 业务 worker 队列中，每个 worker 的最大任务存储数量
+IP: 127.0.0.1
 port: 8080
 
 log:
@@ -23,6 +26,13 @@ mysql:
   dbname: "im"
   max_open_conns: 100
   max_idle_conns: 10
+
+redis:
+  addr: "172.17.175.38:6379"
+  password: ""
+  db: 0
+  pool_size: 30
+  min_idle_conns: 30
 
 websocket:
   port: 8081
