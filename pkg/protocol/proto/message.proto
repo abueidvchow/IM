@@ -23,14 +23,47 @@ enum CmdType{
   CT_UNKNOWN = 0;  // 未知
   CT_MESSAGE = 1;  // 消息投递
   CT_SYNC = 2 ; // 离线消息同步
+  CT_LOGIN = 3; // 登录消息
+  CT_HEARTBEAT = 4; // 心跳消息
 }
 
-//
+// 上行消息（客户端发送给服务端）
+// 使用：
+// 客户端发送前：先组装出下层消息例如 HeartBeatMsg，序列化作为 Input 的 data 值，再填写 type 值，序列化 Input 发送给服务端
+// 服务端收到后：反序列化成 Input，根据 type 值调用不同类型 handler，在 handler 中将 data 解析成其他例如 LoginMsg 类型消息，再做处理
 message Input{
-  CmdType type = 1;
-  bytes data = 2;
+  CmdType type = 1;   // 消息类型，根据不同消息类型，可以将 data 解析成下面其他类型
+  bytes data = 2;    // 数据
 }
 
+// 下行消息（服务端发送给客户端）顶层消息
+// 使用：
+// 服务端发送前：组装出下层消息例如 Message，序列化作为 Output 的 data 值，再填写其他值，序列化 Output 发送给客户端
+// 客户端收到后：反序列化成 Output，根据 type 值调用不同类型 handler，在 handler 中将 data 解析成其他例如 Message 类型消息，再做处理
+message Output {
+  CmdType type = 1;  // 消息类型，根据不同的消息类型，可以将 data 解析成下面其他类型
+  int32 code = 2;  // 错误码
+  string CodeMsg = 3;  // 错误码信息
+  bytes data = 4;  // 数据
+}
+
+// 下行消息批处理
+message OutputBatch {
+  repeated bytes outputs = 1;
+}
+
+// 上行消息内容
+message UpMsg {
+  Message msg = 1; // 消息内容
+  int64 clientId = 2;  // 保证上行消息可靠性
+}
+
+// 下行消息内容
+message PushMsg {
+  Message msg = 1;  // 消息内容
+}
+
+// 上行、下行 消息投递
 message Message {
   SessionType session_type = 1;  // 会话类型 单聊、群聊
   int64 receiver_id = 2;  // 接收者id 用户id/群组id
@@ -40,3 +73,22 @@ message Message {
   int64 seq = 6;   // 客户端的最大消息同步序号
   int64 send_time = 7; // 消息发送时间戳，ms
 }
+
+// 上行离线消息同步
+message SyncInputMsg {
+  int64 seq = 1;  // 客户端已经同步的序列号
+}
+
+// 下行离线消息同步
+message SyncOutputMsg {
+  repeated Message messages = 1;  // 消息列表
+  bool has_more = 2;   // 是否还有更多数据
+}
+
+// 登录
+message LoginMsg {
+  bytes token = 1;    // token
+}
+
+// 心跳
+message HeartbeatMsg {}

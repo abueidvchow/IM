@@ -66,4 +66,32 @@ func GenBin() {
 	}
 
 	fmt.Println("Data has been written to group.bin")
+
+	// 离线消息
+	msg3 := pb.Message{
+		SessionType: 2,
+		ReceiverId:  1,
+		SenderId:    2433910990438400,
+		MessageType: 1,
+		Content:     []byte("你们好"),
+	}
+	marshal, err = proto.Marshal(&msg3)
+	if err != nil {
+		return
+	}
+	input = &pb.Input{
+		Type: 2,
+		Data: marshal,
+	}
+	data, err = proto.Marshal(input)
+	if err != nil {
+		return
+	}
+	// 写入文件
+	err = ioutil.WriteFile("lixian.bin", data, 0644)
+	if err != nil {
+		log.Fatalf("Failed to write file: %v", err)
+	}
+
+	fmt.Println("Data has been written to lixian.bin")
 }

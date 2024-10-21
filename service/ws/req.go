@@ -1,6 +1,8 @@
 package ws
 
 import (
+	"IM/common"
+	"IM/model"
 	"IM/pkg/protocol/pb"
 	"fmt"
 	"google.golang.org/protobuf/proto"
@@ -18,37 +20,43 @@ type Req struct {
 
 func (r *Req) MessageHandler() {
 	// 消息解析 proto string -> struct
-	msg := new(pb.Message)
+	msg := new(pb.UpMsg)
 	err := proto.Unmarshal(r.data, msg)
 	if err != nil {
 		fmt.Println("MessageHandler.proto.Unmarshal error:", err)
 		return
 	}
 
-	if msg.SenderId != r.conn.UserID {
-		fmt.Println("发送者有误,", msg.SenderId, "    ", r.conn.UserID)
+	// 实现消息可靠性
+	if !r.conn.CompareAndIncrClientID(msg.ClientId) {
+		fmt.Println("不是想要收到的 clientID，不进行处理, msg:", msg)
+		return
+	}
+
+	if msg.Msg.SenderId != r.conn.UserID {
+		fmt.Println("发送者有误,", msg.Msg.SenderId, "    ", r.conn.UserID)
 		return
 	}
 
 	// 单聊不能发给自己
-	if msg.SessionType == pb.SessionType_ST_SINGLE && msg.ReceiverId == r.conn.UserID {
+	if msg.Msg.SessionType == pb.SessionType_ST_SINGLE && msg.Msg.ReceiverId == r.conn.UserID {
 		fmt.Println("接收者有误")
 		return
 	}
 
 	// 给自己发一份，消息落库但是不推送
-	//seq, err := SendToUser(msg.Msg, msg.Msg.SenderId)
-	//if err != nil {
-	//	fmt.Println("[消息处理] send to 自己出错, err:", err)
-	//	return
-	//}
+	_, err = SendToUser(msg.Msg.SenderId, msg.Msg)
+	if err != nil {
+		fmt.Println("[消息处理] send to 自己出错, err:", err)
+		return
+	}
 
 	// 单聊、群聊
-	switch msg.SessionType {
+	switch msg.Msg.SessionType {
 	case pb.SessionType_ST_SINGLE:
-		err = SendToUser(msg.ReceiverId, msg)
+		_, err = SendToUser(msg.Msg.ReceiverId, msg.Msg)
 	case pb.SessionType_ST_GROUP:
-		err = SendToGroup(msg.ReceiverId, msg)
+		err = SendToGroup(msg.Msg.ReceiverId, msg.Msg)
 	default:
 		fmt.Println("会话类型错误")
 		return
@@ -72,6 +80,36 @@ func (r *Req) MessageHandler() {
 	//r.conn.SendMsg(msg.Msg.SenderId, ackBytes)
 }
 
-func (r *Req) Sync() {
+func (r *Req) HeartBeat() {
+	// TODO 更新当前用户状态，不做回复
+}
 
+// TODO
+func (r *Req) Sync() {
+	msg := new(pb.SyncInputMsg)
+	err := proto.Unmarshal(r.data, msg)
+	if err != nil {
+		fmt.Println("Sync.proto.Unmarshal error:", err)
+		return
+	}
+	// 根据seq查询，得到比 seq 大的用户消息
+	messages, hasMore, err := model.MessagesListByUserIdAndSeq(r.conn.UserID, msg.Seq, model.MessageLimit)
+	if err != nil {
+		fmt.Println("Sync.model.MessagesListByUserIdAndSeq error:", err)
+		return
+	}
+	pbMessage := model.MessagesToPB(messages)
+
+	ackBytes, err := GetOutputMsg(pb.CmdType_CT_SYNC, common.OK, &pb.SyncOutputMsg{
+		Messages: pbMessage,
+		HasMore:  hasMore,
+	})
+	if err != nil {
+		fmt.Println("[离线消息] proto.Marshal err:", err)
+		return
+	}
+	r.conn.sendChannel <- ackBytes
+
+	// 回复
+	//r.conn.SendMsg(r.conn.GetUserId(), ackBytes)
 }

@@ -19,6 +19,7 @@ func ChatService(uid int64, w http.ResponseWriter, r *http.Request) {
 		fmt.Println("SingleChatService.ws.NewWebSocketConn err: ", err)
 		return
 	}
+	fmt.Printf("%d come in... \n", uid)
 	go wsc.Start()
 	// TODO
 	select {}

@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+const (
+	MessageLimit = 50 // 最大消息同步数量
+)
+
 type Message struct {
 	ID          int64     `gorm:"primary_key;auto_increment;comment:'自增主键'" json:"id"`
 	UserID      int64     `gorm:"not null;comment:'用户id，指接受者用户id'" json:"user_id"`
@@ -76,10 +80,44 @@ func MessageToProtoMarshal(messages ...*Message) []byte {
 	return bytes
 }
 
+func MessagesToPB(messages []Message) []*pb.Message {
+	pbMessages := make([]*pb.Message, 0, len(messages))
+	for _, message := range messages {
+		pbMessages = append(pbMessages, &pb.Message{
+			SessionType: pb.SessionType(message.SessionType),
+			ReceiverId:  message.ReceiverId,
+			SenderId:    message.SenderID,
+			MessageType: pb.MessageType(message.MessageType),
+			Content:     message.Content,
+			Seq:         message.Seq,
+		})
+	}
+	return pbMessages
+}
+
 func CreateMessages(messages []*Message) (err error) {
 	result := db.DB.Create(messages)
 	if err = result.Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+func MessagesListByUserIdAndSeq(uid int64, seq int64, limit int) ([]Message, bool, error) {
+	var cnt int64
+	err := db.DB.Table("message").Where("user_id = ? AND seq > ?", uid, seq).Count(&cnt).Error
+	if err != nil {
+		return nil, false, err
+	}
+	if cnt == 0 {
+		return nil, false, nil
+	}
+
+	var messages []Message
+	err = db.DB.Where("user_id = ? AND seq > ?", uid, seq).
+		Limit(limit).Order("seq ASC").Find(&messages).Error
+	if err != nil {
+		return nil, false, err
+	}
+	return messages, cnt > int64(limit), nil
 }

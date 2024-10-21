@@ -44,7 +44,12 @@ func UserLogin(c *gin.Context) {
 	}
 	if code < 2000 {
 		c.Set(CtxUserIdKey, user_id)
-		ResponseSuccess(c, code, token)
+		type Data struct {
+			Token  string `json:"token"`
+			UserId string `json:"user_id"`
+		}
+		data := Data{Token: token, UserId: user_id}
+		ResponseSuccess(c, code, data)
 	} else {
 		ResponseError(c, code)
 	}

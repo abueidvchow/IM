@@ -4,6 +4,7 @@ type HttpStatusCode int
 
 // Http
 const (
+	OK               = 200
 	SUCCESS_REGISTER = 1000 + iota
 	SUCCESS_LOGIN
 	SUCCESS_ADD_FRIEND
@@ -26,6 +27,7 @@ const (
 )
 
 var HttpMsg map[HttpStatusCode]string = map[HttpStatusCode]string{
+	OK:                      "成功",
 	SUCCESS_REGISTER:        "注册成功",
 	SUCCESS_LOGIN:           "登录成功",
 	SUCCESS_ADD_FRIEND:      "添加好友成功",
