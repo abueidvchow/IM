@@ -139,6 +139,11 @@ func (wsc *WebSocketConn) IsAlive() bool {
 	return true
 }
 
+// 发送消息
+func (wsc *WebSocketConn) SendMsg(data []byte) {
+	wsc.sendChannel <- data
+}
+
 func (wsc *WebSocketConn) CompareAndIncrClientID(newMaxClientId int64) bool {
 	wsc.maxClientIdMutex.Lock()
 	defer wsc.maxClientIdMutex.Unlock()
@@ -179,6 +184,8 @@ func (wsc *WebSocketConn) HandlerMessage(data []byte) {
 		req.f = req.Sync
 	case pb.CmdType_CT_HEARTBEAT:
 		req.f = req.HeartBeat
+	case pb.CmdType_CT_ACK:
+		req.f = req.ACKMsg
 	default:
 		fmt.Println("未知消息类型")
 	}

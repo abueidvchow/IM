@@ -250,3 +250,124 @@
 2024-10-21T17:06:24.001+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0088265}
 2024-10-21T17:06:42.217+0800	INFO	IM/main.go:56	Shutdown Server ...
 2024-10-21T17:06:42.217+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T15:52:30.168+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T15:52:30.230+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T15:53:37.113+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.7095154}
+2024-10-23T15:54:29.070+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0027925}
+2024-10-23T17:44:57.231+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0035747}
+2024-10-23T18:16:25.375+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:16:25.375+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T18:16:58.622+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.4958765}
+2024-10-23T18:17:06.496+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.002067}
+2024-10-23T18:19:03.198+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:19:03.198+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T18:27:45.918+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0246625}
+2024-10-23T18:27:48.961+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0021161}
+2024-10-23T18:27:56.526+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.002028}
+2024-10-23T18:31:58.630+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:31:58.631+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T18:32:08.183+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0261291}
+2024-10-23T18:32:24.136+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0031696}
+2024-10-23T18:33:05.368+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0027251}
+2024-10-23T18:34:08.240+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:34:08.241+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T18:36:30.640+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0275125}
+2024-10-23T18:47:05.729+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:47:05.729+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T18:48:00.965+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0247932}
+2024-10-23T18:48:11.106+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:48:11.106+0800	INFO	IM/main.go:65	Server exiting
+2024-10-23T18:49:17.359+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0264086}
+2024-10-23T18:50:15.447+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0034696}
+2024-10-23T18:50:23.316+0800	INFO	IM/main.go:56	Shutdown Server ...
+2024-10-23T18:50:23.316+0800	INFO	IM/main.go:65	Server exiting
+2024-10-24T17:38:33.476+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:38:33.579+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:42:30.694+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.6083691}
+2024-10-24T17:42:48.012+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0047161}
+2024-10-24T17:43:37.202+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:43:37.202+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:47:00.213+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:47:00.213+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:47:31.434+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0052877}
+2024-10-24T17:47:38.740+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0058144}
+2024-10-24T17:47:58.248+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:47:59.249+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:00.997+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:03.576+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:07.574+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:12.903+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:23.921+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:24.324+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:24.922+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:26.533+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:29.228+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:33.958+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:39.478+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:41.499+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:48:51.925+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:49:08.311+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:49:08.532+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:49:35.414+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:49:44.386+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:11.907+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:37.927+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0027089}
+2024-10-24T17:50:49.415+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:50.417+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:51.862+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:53.961+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:54.916+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:50:58.361+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:51:03.644+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:51:16.170+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:51:29.756+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:51:30.939+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:51:53.740+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:52:26.381+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:52:42.834+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:52:47.989+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:52:47.989+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:52:50.044+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:52:50.044+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:53:16.260+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0227814}
+2024-10-24T17:53:37.553+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0052792}
+2024-10-24T17:53:47.289+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0029258}
+2024-10-24T17:53:54.017+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:53:55.019+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:53:56.751+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:53:59.533+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:54:04.075+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:54:11.583+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:54:21.251+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:54:37.928+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:55:08.011+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:55:57.942+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:57:13.224+0800	INFO	logger/logger.go:78	*	{"status": 404, "method": "PRI", "path": "*", "query": "", "ip": "127.0.0.1", "user-agent": "", "errors": "", "cost": 0}
+2024-10-24T17:57:41.212+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:57:41.213+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:57:44.013+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T17:57:44.013+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T17:58:47.457+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0039721}
+2024-10-24T18:01:02.636+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:01:02.636+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:01:04.169+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:01:04.170+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:02:08.429+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.1128545}
+2024-10-24T18:02:12.881+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0041981}
+2024-10-24T18:06:18.802+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:06:18.803+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:06:22.355+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:06:22.355+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:25:47.959+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0044947}
+2024-10-24T18:25:55.879+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0043285}
+2024-10-24T18:27:58.218+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:27:58.218+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:28:00.177+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:28:00.177+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:28:22.783+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0049664}
+2024-10-24T18:28:27.263+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0050063}
+2024-10-24T18:29:24.462+0800	INFO	logger/logger.go:78	/login	{"status": 200, "method": "POST", "path": "/login", "query": "", "ip": "127.0.0.1", "user-agent": "Go-http-client/1.1", "errors": "", "cost": 0.0027495}
+2024-10-24T18:29:44.835+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:29:44.835+0800	INFO	IM/main.go:66	Server exiting
+2024-10-24T18:29:46.433+0800	INFO	IM/main.go:57	Shutdown Server ...
+2024-10-24T18:29:46.433+0800	INFO	IM/main.go:66	Server exiting

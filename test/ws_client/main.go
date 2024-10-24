@@ -106,35 +106,36 @@ func (wsc *WebSocketClient) ReadLine() {
 		wsc.SendMsg(pb.CmdType_CT_MESSAGE, UpMsg)
 
 		// 启动超时重传
-		//ctx, cancel := context.WithCancel(context.Background())
-		//
-		//go func(ctx context.Context) {
-		//	maxRetry := ResendCountMax // 最大重试次数
-		//	retryCount := 0
-		//	retryInterval := time.Millisecond * 100 // 重试间隔
-		//	ticker := time.NewTicker(retryInterval)
-		//	defer ticker.Stop()
-		//	for {
-		//		select {
-		//		case <-ctx.Done():
-		//			fmt.Println("收到 ACK，不再重试")
-		//			return
-		//		case <-ticker.C:
-		//			if retryCount >= maxRetry {
-		//				fmt.Println("达到最大超时次数，不再重试")
-		//				// TODO 进行消息发送失败处理
-		//				return
-		//			}
-		//			fmt.Println("消息超时 msg:", msg, "，第", retryCount+1, "次重试")
-		//			wsc.SendMsg(pb.CmdType_CT_MESSAGE, UpMsg)
-		//			retryCount++
-		//		}
-		//	}
-		//}(ctx)
-		//
-		//wsc.clientId2CancelMutex.Lock()
-		//wsc.clientId2Cancel[UpMsg.ClientId] = cancel
-		//wsc.clientId2CancelMutex.Unlock()
+		ctx, cancel := context.WithCancel(context.Background())
+
+		go func(ctx context.Context) {
+			maxRetry := ResendCountMax // 最大重试次数
+			retryCount := 0
+			retryInterval := time.Millisecond * 100 // 重试间隔
+			ticker := time.NewTicker(retryInterval)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-ctx.Done():
+					//fmt.Println("收到 ACK，不再重试")
+					return
+				case <-ticker.C:
+					if retryCount >= maxRetry {
+						fmt.Println("达到最大超时次数，不再重试")
+						// TODO 进行消息发送失败处理
+						return
+					}
+					fmt.Println("消息超时 msg:", msg, "，第", retryCount+1, "次重试")
+					wsc.SendMsg(pb.CmdType_CT_MESSAGE, UpMsg)
+					retryCount++
+				}
+			}
+		}(ctx)
+
+		// 多协程里有访问到map都要加锁
+		wsc.clientId2CancelMutex.Lock()
+		wsc.clientId2Cancel[UpMsg.ClientId] = cancel
+		wsc.clientId2CancelMutex.Unlock()
 
 		time.Sleep(time.Second)
 	}
@@ -171,7 +172,6 @@ func (wsc *WebSocketClient) HandlerMessage(bytes []byte) {
 		panic(err)
 	}
 	for _, output := range outputBatchMsg.Outputs {
-		fmt.Println("output")
 		msg := new(pb.Output)
 		err := proto.Unmarshal(output, msg)
 		if err != nil {
@@ -211,35 +211,44 @@ func (wsc *WebSocketClient) HandlerMessage(bytes []byte) {
 			seq := pushMsg.Msg.Seq
 			if wsc.seq < seq {
 				wsc.seq = seq
+				fmt.Println("更新 seq:", wsc.seq)
 			}
-			fmt.Println("更新 seq:", wsc.seq)
-		//case pb.CmdType_CT_ACK: // 收到 ACK
-		//	ackMsg := new(pb.ACKMsg)
-		//	err = proto.Unmarshal(msg.Data, ackMsg)
-		//	if err != nil {
-		//		panic(err)
-		//	}
-		//
-		//	switch ackMsg.Type {
-		//	case pb.ACKType_AT_Login:
-		//		fmt.Println("登录成功")
-		//	case pb.ACKType_AT_Up: // 收到上行消息的 ACK
-		//		// 取消超时重传
-		//		clientId := ackMsg.ClientId
-		//		c.clientId2CancelMutex.Lock()
-		//		if cancel, ok := c.clientId2Cancel[clientId]; ok {
-		//			// 取消超时重传
-		//			cancel()
-		//			delete(c.clientId2Cancel, clientId)
-		//			fmt.Println("取消超时重传，clientId:", clientId)
-		//		}
-		//		c.clientId2CancelMutex.Unlock()
-		//		// 更新客户端本地维护的 seq
-		//		seq := ackMsg.Seq
-		//		if c.seq < seq {
-		//			c.seq = seq
-		//		}
-		//	}
+
+			// 需要向服务端回复 ACKType：AT_PUSH的消息
+			ackMsg := new(pb.ACKMsg)
+			ackMsg.Type = pb.ACKType_AT_PUSH
+			ackMsg.ClientId = wsc.clientId
+			ackMsg.Seq = seq
+
+			wsc.SendMsg(pb.CmdType_CT_ACK, ackMsg)
+
+		case pb.CmdType_CT_ACK: // 收到 ACK
+			ackMsg := new(pb.ACKMsg)
+			err = proto.Unmarshal(msg.Data, ackMsg)
+			if err != nil {
+				panic(err)
+			}
+
+			switch ackMsg.Type {
+			case pb.ACKType_AT_LOGIN:
+				fmt.Println("登录成功")
+			case pb.ACKType_AT_UP: // 收到上行消息的 ACK
+				// 取消超时重传
+				clientId := ackMsg.ClientId // 更新clientId
+				wsc.clientId2CancelMutex.Lock()
+				if cancel, ok := wsc.clientId2Cancel[clientId]; ok {
+					// 取消超时重传
+					cancel()
+					delete(wsc.clientId2Cancel, clientId)
+					//fmt.Println("取消超时重传，clientId:", clientId)
+				}
+				wsc.clientId2CancelMutex.Unlock()
+				// 更新客户端本地维护的 seq
+				seq := ackMsg.Seq
+				if wsc.seq < seq {
+					wsc.seq = seq
+				}
+			}
 		default:
 			fmt.Println("未知消息类型")
 		}
@@ -299,7 +308,7 @@ func Login() *WebSocketClient {
 
 	// 设置请求头
 	headers := map[string]string{
-		"Content-Type": "application/json", // 根据你的需求更改 Content-Type
+		"Content-Type": "application/json",
 	}
 
 	// 准备请求体的原始数据

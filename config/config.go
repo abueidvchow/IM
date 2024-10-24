@@ -15,6 +15,7 @@ type AppConfig struct {
 	MachineID         int64  `mapstructure:"machine_id"`         // 雪花算法会使用到
 	IP                string `mapstructure:"ip"`                 // 运行地址
 	Port              int    `mapstructure:"port"`               // 运行端口
+	RPCPort           int    `mapstructure:"rpc_port"`           // RPC运行端口
 	HeartbeatTimeout  int    `mapstructure:"heartbeat_timeout"`  // 心跳超时时间（秒）
 	HeartbeatInterval int    `mapstructure:"heartbeat_interval"` // 心跳检测时间间隔（秒）
 	WorkerPoolSize    int32  `mapstructure:"worker_pool_size"`   // 队列数量
@@ -25,6 +26,7 @@ type AppConfig struct {
 	LogConfig       *LogConfig       `mapstructure:"log"`
 	MySQLConfig     *MySQLConfig     `mapstructure:"mysql"`
 	RedisConfig     *RedisConfig     `mapstructure:"redis"`
+	ETCDConfig      *ETCDConfig      `mapstructure:"etcd"`
 }
 
 type MySQLConfig struct {
@@ -60,6 +62,11 @@ type WebSocketConfig struct {
 
 type RabbitMQConfig struct {
 	Url string `mapstructure:"url"`
+}
+
+type ETCDConfig struct {
+	Endpoints []string `mapstructure:"endpoints"`
+	Timeout   int      `mapstructure:"timeout"`
 }
 
 func Init(configFile string) error {

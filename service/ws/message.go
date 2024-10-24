@@ -6,6 +6,7 @@ import (
 	"IM/pkg/db"
 	"IM/pkg/mq"
 	"IM/pkg/protocol/pb"
+	"IM/pkg/rpc"
 	"context"
 	"fmt"
 	"github.com/rabbitmq/amqp091-go"
@@ -94,7 +95,7 @@ func SendToUser(rid int64, msg *pb.Message) (int64, error) {
 			Body: mData,
 		})
 	if err != nil {
-		fmt.Println("发送消息给消息队列失败:", err)
+		fmt.Println("SendToUser send to mq error:", err)
 		return 0, err
 	}
 
@@ -104,29 +105,47 @@ func SendToUser(rid int64, msg *pb.Message) (int64, error) {
 	}
 
 	// 检验对方是否在线
-	online, err := db.GetUserOnline(rid)
+	rpcAddr, err := db.GetUserOnline(rid)
 	if err != nil {
 		fmt.Println("SendToUser.db.GetUserOnline error:", err)
 		return 0, err
 	}
 	// 对方离线
-	if online == "" {
+	if rpcAddr == "" {
+		// 离线的话，上线会拉取离线消息的，因为在前面已经发送给rabbitMQ了
 		fmt.Printf("用户ID：%d 不在线 \n", rid)
 		return 0, err
 	}
-
-	// 对方在线
+	// 检验是否同属于本地
 	wsc := WSCMgr.GetConn(rid)
-
 	// 组装下行消息
 	bytes, err := GetOutputMsg(pb.CmdType_CT_MESSAGE, common.OK, &pb.PushMsg{Msg: msg})
 	if err != nil {
-		fmt.Println("[消息处理] GetOutputMsg Marshal error,err:", err)
+		fmt.Println("SendToUser.GetOutputMsg Marshal error:", err)
 		return 0, err
 	}
 
-	//wsc.sendChannel <- msg.Content // POSTMAN接收
-	wsc.sendChannel <- bytes
+	if wsc != nil {
+		// 发送本地消息
+		wsc.SendMsg(bytes)
+		fmt.Println("SendToUser send msg to local userId: ", rid)
+		return 0, nil
+	}
+
+	// 不是本地的，rpc 调用
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	_, err = rpc.GetServerClient(rpcAddr).DeliverMessage(ctx, &pb.DeliverMessageReq{
+		ReceiverId: rid,
+		Data:       bytes,
+	})
+
+	if err != nil {
+		fmt.Println("SendToUser.DeliverMessage error:", err)
+		return 0, err
+	}
+
 	return 0, nil
 }
 
@@ -156,7 +175,7 @@ func SendToGroup(groupId int64, msg *pb.Message) (err error) {
 
 	// 检验当前用户是否属于当前群
 	if _, ok := m[msg.SenderId]; !ok {
-		fmt.Println("用户不属于该群组")
+		fmt.Printf("userID:%d not belong to groupID:%d\n", msg.SenderId, groupId)
 		return
 	}
 
@@ -204,25 +223,55 @@ func SendToGroup(groupId int64, msg *pb.Message) (err error) {
 			Body:        model.MessageToProtoMarshal(messages...),
 		})
 	if err != nil {
-		fmt.Println("发送消息给消息队列失败:", err)
+		fmt.Println("send messages to mq error:", err)
 		return
 	}
 
+	// 本地地址
+	//local := fmt.Sprintf("%v:%v", config.Conf.IP, config.Conf.RPCPort)
 	// 组装消息推送
 	for UserID, seq := range receiverId2Seq {
-		wsc := WSCMgr.GetConn(UserID)
-		msg.Seq = seq
-		// 组装下行消息
-		bytes, err := GetOutputMsg(pb.CmdType_CT_MESSAGE, common.OK, &pb.PushMsg{Msg: msg})
+		// 检验对方是否在线
+		rpcAddr, err := db.GetUserOnline(UserID)
 		if err != nil {
-			fmt.Println("[消息处理] GetOutputMsg Marshal error,err:", err)
-			return err
+			fmt.Println("SendToGroup.db.GetUserOnline error:", err)
+			continue
+		}
+		// 离线
+		if rpcAddr == "" {
+			fmt.Printf("userID: %d offline\n", UserID)
+			continue
 		}
 
-		wsc.sendChannel <- bytes
-		//wsc.sendChannel <- msg.Content // POSTMAN发送
-	}
-	fmt.Println("群消息发送完成 ")
+		// 在线的话判断是否同属于本地
+		wsc := WSCMgr.GetConn(UserID)
+		// 组装下行消息
+		msg.Seq = seq
+		bytes, err := GetOutputMsg(pb.CmdType_CT_MESSAGE, common.OK, &pb.PushMsg{Msg: msg})
+		if err != nil {
+			fmt.Println("SendToGroup.GetOutputMsg Marshal error,err:", err)
+			return err
+		}
+		// 同属于本地
+		if wsc != nil {
+			wsc.SendMsg(bytes)
+		} else {
+			// 不是本地的，rpc 调用
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
 
+			_, err = rpc.GetServerClient(rpcAddr).DeliverMessage(ctx, &pb.DeliverMessageReq{
+				ReceiverId: UserID,
+				Data:       bytes,
+			})
+
+			if err != nil {
+				fmt.Println("SendToGroup.DeliverMessage error:", err)
+				return err
+			}
+		}
+		fmt.Printf("SendToGroup send msg to userId: %d in %s\n", UserID, rpcAddr)
+
+	}
 	return nil
 }

@@ -45,7 +45,7 @@ func (r *Req) MessageHandler() {
 	}
 
 	// 给自己发一份，消息落库但是不推送
-	_, err = SendToUser(msg.Msg.SenderId, msg.Msg)
+	seq, err := SendToUser(msg.Msg.SenderId, msg.Msg)
 	if err != nil {
 		fmt.Println("[消息处理] send to 自己出错, err:", err)
 		return
@@ -65,26 +65,26 @@ func (r *Req) MessageHandler() {
 		fmt.Println("[消息处理] 系统错误")
 		return
 	}
-	//
-	//// 回复发送上行消息的客户端 ACK
-	//ackBytes, err := GetOutputMsg(pb.CmdType_CT_ACK, common.OK, &pb.ACKMsg{
-	//	Type:     pb.ACKType_AT_Up,
-	//	ClientId: msg.ClientId, // 回复客户端，当前已 ACK 的消息
-	//	Seq:      seq,          // 回复客户端当前其 seq
-	//})
-	//if err != nil {
-	//	fmt.Println("[消息处理] proto.Marshal err:", err)
-	//	return
-	//}
-	// 回复发送 Message 请求的客户端 A
-	//r.conn.SendMsg(msg.Msg.SenderId, ackBytes)
+
+	// 回复发送上行消息的客户端 ACK
+	ackBytes, err := GetOutputMsg(pb.CmdType_CT_ACK, common.OK, &pb.ACKMsg{
+		Type:     pb.ACKType_AT_UP,
+		ClientId: msg.ClientId, // 回复客户端，当前已 ACK 的消息
+		Seq:      seq,          // 回复客户端当前其 seq
+	})
+	if err != nil {
+		fmt.Println("[消息处理] proto.Marshal err:", err)
+		return
+	}
+	//回复发送 Message 请求的客户端 A
+	r.conn.SendMsg(ackBytes)
+
 }
 
 func (r *Req) HeartBeat() {
 	// TODO 更新当前用户状态，不做回复
 }
 
-// TODO
 func (r *Req) Sync() {
 	msg := new(pb.SyncInputMsg)
 	err := proto.Unmarshal(r.data, msg)
@@ -108,8 +108,23 @@ func (r *Req) Sync() {
 		fmt.Println("[离线消息] proto.Marshal err:", err)
 		return
 	}
-	r.conn.sendChannel <- ackBytes
+	r.conn.SendMsg(ackBytes)
 
-	// 回复
-	//r.conn.SendMsg(r.conn.GetUserId(), ackBytes)
+}
+
+// 下行消息确认
+func (r *Req) ACKMsg() {
+	ackMsg := new(pb.ACKMsg)
+	err := proto.Unmarshal(r.data, ackMsg)
+	if err != nil {
+		fmt.Println("AckMsg.proto.Unmarshal error:", err)
+		return
+	}
+	r.conn.maxClientIdMutex.Lock()
+	defer r.conn.maxClientIdMutex.Unlock()
+	if ackMsg.ClientId != r.conn.maxClientId {
+		fmt.Printf("ackMsg.ClientId: %d != r.conn.maxClientId: %d\n", ackMsg.ClientId, r.conn.maxClientId)
+		return
+	}
+	//fmt.Println("下行消息确认")
 }

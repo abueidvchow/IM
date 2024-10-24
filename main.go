@@ -2,12 +2,13 @@ package main
 
 import (
 	"IM/config"
-	"IM/pkg"
 	"IM/pkg/db"
+	"IM/pkg/etcd"
 	"IM/pkg/logger"
 	"IM/pkg/mq"
 	sf "IM/pkg/snowflake"
 	"IM/router"
+	"IM/service/rpc_server"
 	"IM/service/ws"
 	"context"
 	"fmt"
@@ -109,10 +110,18 @@ func init() {
 		fmt.Println("消息队列初始化失败：", err)
 		return
 	}
+
+	// 初始化ETCD
+	if err := etcd.InitETCD(config.Conf.ETCDConfig); err != nil {
+		fmt.Println("服务注册发现初始化失败：", err)
+		return
+	}
+
+	// 初始化gRPC
+	go rpc_server.InitRPCServer(config.Conf.RPCPort)
 }
 
 func main() {
-	pkg.GenBin()
 	// 路由注册
 	r := router.SetUpRouter()
 	run(r)

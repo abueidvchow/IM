@@ -80,8 +80,8 @@ func UserLoginService(p *request.LoginParam) (code common.HttpStatusCode, token,
 	}
 
 	// 加入Redis在线列表
-	loginAddr := config.Conf.IP + strconv.Itoa(config.Conf.Port)
-	err = db.SetUserOnline(user.UserID, loginAddr)
+	rpcAddr := config.Conf.IP + ":" + strconv.Itoa(config.Conf.RPCPort)
+	err = db.SetUserOnline(user.UserID, rpcAddr)
 	if err != nil {
 		return common.ERROR_REDIS, "", "", err
 	}

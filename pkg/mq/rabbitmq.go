@@ -141,5 +141,5 @@ func handleDelivery(d amqp091.Delivery) {
 	if err = d.Ack(false); err != nil {
 		log.Printf("Failed to acknowledge delivery: %v", err)
 	}
-	fmt.Println("消费者处理完成")
+	//fmt.Println("消费者处理完成")
 }
