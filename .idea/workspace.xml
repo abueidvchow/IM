@@ -5,26 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11aff32-a142-4baa-b5eb-3c4f4212c449" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/common/etcd.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO" beforeDir="false" afterPath="$PROJECT_DIR$/TODO" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lixian.bin" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/log/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/debug.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/gen_binary.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/mq/rabbitmq.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/mq/rabbitmq.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/protocol/pb/message.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/protocol/pb/message.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/protocol/proto/message.proto" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/protocol/proto/message.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/ws/conn.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/ws/conn.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/etcd/discovery.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/etcd/discovery.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/etcd/etcd.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/etcd/etcd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/etcd/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/etcd/register.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc_server/conn.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc_server/conn.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/ws/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/ws/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/ws/mgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/ws/mgr.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/ws/req.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/ws/req.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/siliao.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ws_client/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/ws_client/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +57,7 @@
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "git-widget-placeholder": "master",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "D:/GoProjects/src/IM",
+    "last_opened_file_path": "D:/GoProjects/src/GoChat-main",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -86,7 +78,7 @@
       <recent name="D:\GoProjects\src\IM\common\http" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build main.go">
+  <component name="RunManager" selected="Go Build.main">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="IM" />
       <working_directory value="$PROJECT_DIR$" />
@@ -108,8 +100,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.main" />
+        <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>
   </component>

@@ -33,10 +33,8 @@ func (R ConnectServer) DeliverMessage(ctx context.Context, req *pb.DeliverMessag
 func (R ConnectServer) DeliverGroupMessage(ctx context.Context, req *pb.DeliverMessageGroupReq) (*emptypb.Empty, error) {
 	resp := &emptypb.Empty{}
 
-	//// 进行本地推送
-	//ws.WSCMgr
-	//ws.GetServer().SendMessageAll(req.GetReceiverId_2Data())
-
+	// 进行本地推送
+	ws.WSCMgr.SendMessageAll(req.GetReceiverId_2Data())
 	return resp, nil
 }
 

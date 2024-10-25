@@ -42,6 +42,28 @@ func (this *WebSocketConnMgr) GetAllConn() map[int64]*WebSocketConn {
 	return this.Wscs
 }
 
+// SendMessageAll 进行本地推送
+func (this *WebSocketConnMgr) SendMessageAll(userId2Msg map[int64][]byte) {
+	var wg sync.WaitGroup
+	ch := make(chan struct{}, 5) // 限制并发数
+	for userId, data := range userId2Msg {
+		ch <- struct{}{}
+		wg.Add(1)
+		go func(userId int64, data []byte) {
+			defer func() {
+				<-ch
+				wg.Done()
+			}()
+			conn := this.GetConn(userId)
+			if conn != nil {
+				conn.SendMsg(data)
+			}
+		}(userId, data)
+	}
+	close(ch)
+	wg.Wait()
+}
+
 // StartWorkerPool 启动 worker 工作池
 func (this *WebSocketConnMgr) StartWorkerPool() {
 	// 初始化并启动 worker 工作池

@@ -75,47 +75,44 @@ func init() {
 	err := config.Init(os.Args[1])
 	if err != nil {
 		fmt.Println("读取配置文件错误:", err)
-		return
+		panic(err)
 	}
 
 	// MySQL数据库初始化
 	err = db.InitMySQL(config.Conf.MySQLConfig)
 	if err != nil {
 		fmt.Println("MySQL数据库初始化失败：", err)
-		return
+		panic(err)
 	}
 
 	// Redis数据库初始化
 	err = db.InitRedis(config.Conf.RedisConfig)
 	if err != nil {
 		fmt.Println("Redis数据库初始化失败：", err)
-		return
+		panic(err)
 	}
 
 	// 日志初始化
 	err = logger.Init(config.Conf.LogConfig)
 	if err != nil {
 		fmt.Println("日志初始化失败：", err)
-		return
+		panic(err)
 	}
 
 	// 初始化雪花算法
 	if err := sf.Init(config.Conf.StartTime, config.Conf.MachineID); err != nil {
 		fmt.Println("雪花算法初始化失败：", err)
-		return
+		panic(err)
 	}
 
 	// 初始化消息队列
 	if err := mq.InitRabbitMQ(config.Conf.RabbitMQConfig); err != nil {
 		fmt.Println("消息队列初始化失败：", err)
-		return
+		panic(err)
 	}
 
 	// 初始化ETCD
-	if err := etcd.InitETCD(config.Conf.ETCDConfig); err != nil {
-		fmt.Println("服务注册发现初始化失败：", err)
-		return
-	}
+	go etcd.InitETCD(config.Conf)
 
 	// 初始化gRPC
 	go rpc_server.InitRPCServer(config.Conf.RPCPort)

@@ -2,8 +2,10 @@ package ws
 
 import (
 	"IM/common"
+	"IM/config"
 	"IM/model"
 	"IM/pkg/db"
+	"IM/pkg/etcd"
 	"IM/pkg/mq"
 	"IM/pkg/protocol/pb"
 	"IM/pkg/rpc"
@@ -227,51 +229,41 @@ func SendToGroup(groupId int64, msg *pb.Message) (err error) {
 		return
 	}
 
-	// 本地地址
-	//local := fmt.Sprintf("%v:%v", config.Conf.IP, config.Conf.RPCPort)
-	// 组装消息推送
-	for UserID, seq := range receiverId2Seq {
-		// 检验对方是否在线
-		rpcAddr, err := db.GetUserOnline(UserID)
-		if err != nil {
-			fmt.Println("SendToGroup.db.GetUserOnline error:", err)
-			continue
-		}
-		// 离线
-		if rpcAddr == "" {
-			fmt.Printf("userID: %d offline\n", UserID)
-			continue
-		}
-
-		// 在线的话判断是否同属于本地
-		wsc := WSCMgr.GetConn(UserID)
-		// 组装下行消息
+	// 组装消息，进行推送
+	userId2Msg := make(map[int64][]byte, len(m))
+	for userId, seq := range receiverId2Seq {
 		msg.Seq = seq
-		bytes, err := GetOutputMsg(pb.CmdType_CT_MESSAGE, common.OK, &pb.PushMsg{Msg: msg})
+		bytes, err := GetOutputMsg(pb.CmdType_CT_MESSAGE, int32(common.OK), &pb.PushMsg{Msg: msg})
 		if err != nil {
 			fmt.Println("SendToGroup.GetOutputMsg Marshal error,err:", err)
 			return err
 		}
-		// 同属于本地
-		if wsc != nil {
-			wsc.SendMsg(bytes)
-		} else {
-			// 不是本地的，rpc 调用
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-			defer cancel()
+		userId2Msg[userId] = bytes
+	}
 
-			_, err = rpc.GetServerClient(rpcAddr).DeliverMessage(ctx, &pb.DeliverMessageReq{
-				ReceiverId: UserID,
-				Data:       bytes,
+	// 获取全部网关服务，进行消息推送
+	services := etcd.DiscoverySer.GetServices()
+	// 本地地址
+	local := fmt.Sprintf("%v:%v", config.Conf.IP, config.Conf.RPCPort)
+
+	for _, addr := range services {
+		// 如果是本机，进行本地推送
+		if local == addr {
+			fmt.Println("进行本地推送")
+			WSCMgr.SendMessageAll(userId2Msg)
+		} else {
+			fmt.Println("远端推送：", addr)
+			// 如果不是本机，进行远程 RPC 调用
+			_, err = rpc.GetServerClient(addr).DeliverGroupMessage(context.Background(), &pb.DeliverMessageGroupReq{
+				ReceiverId_2Data: userId2Msg,
 			})
 
 			if err != nil {
-				fmt.Println("SendToGroup.DeliverMessage error:", err)
+				fmt.Println("[消息处理] DeliverMessageAll err, err:", err)
 				return err
 			}
 		}
-		fmt.Printf("SendToGroup send msg to userId: %d in %s\n", UserID, rpcAddr)
-
 	}
+
 	return nil
 }
